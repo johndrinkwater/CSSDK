@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp", "mp.vcxproj", "{B1A494A8-F99E-40B4-B97C-7054589826D8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Éléments de solution", "Éléments de solution", "{41417793-CD7F-4BBE-9230-49FE68C8D4EE}"
+	ProjectSection(SolutionItems) = preProject
+		mp.vsd = mp.vsd
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Profile|Win32 = Profile|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B1A494A8-F99E-40B4-B97C-7054589826D8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B1A494A8-F99E-40B4-B97C-7054589826D8}.Debug|Win32.Build.0 = Debug|Win32
+		{B1A494A8-F99E-40B4-B97C-7054589826D8}.Profile|Win32.ActiveCfg = Profile|Win32
+		{B1A494A8-F99E-40B4-B97C-7054589826D8}.Profile|Win32.Build.0 = Profile|Win32
+		{B1A494A8-F99E-40B4-B97C-7054589826D8}.Release|Win32.ActiveCfg = Release|Win32
+		{B1A494A8-F99E-40B4-B97C-7054589826D8}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
