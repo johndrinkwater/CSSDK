@@ -1,0 +1,11 @@
+An attempt to create a partial source code of counter-strike to be used as useful resources for the AMX Mod X community.
+
+A purpose would be to know more on some counter-strike specificities, understanding the flow of some features, extracting useful datas thus helping the community by creating better plugins which should be more finely, intelligently, and efficiently coded.
+
+The project is based on the HLSDK for at least three reasons :
+- It's more easy to insert code inside an existing project using an IDE.
+- Can try to compile to see if the code is well integrated and decent.
+- A useful online documentation can be generated with Doxygen.
+
+Please don't expect a finished project. CS code will be implemented progressively.
+The online documentation can be found here : http://arkshine.github.com/CSSDK/.
