@@ -495,6 +495,11 @@ void CBasePlayer::AddAccount( int amount, bool trackChange )
 	MESSAGE_END();
 }
 
+void CBasePlayer::AllowAutoFollow( void )
+{
+	m_flNextAutoFollowTime = 0;
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );

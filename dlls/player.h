@@ -251,6 +251,9 @@ public:
 
 	char m_szTeamName[TEAM_NAME_LENGTH];
 
+	// CSSDK
+	float	m_flNextAutoFollowTime;		// 519/524 -
+
 	virtual void Spawn( void );
 	void Pain( void );
 
@@ -317,10 +320,11 @@ public:
 
 	// CSSDK
 	void AddAccount( int amount, bool trackChange );
+	BOOL AddPlayerItem( CBasePlayerItem *pItem );
+	void AllowAutoFollow( void );
 
 	void AddPoints( int score, BOOL bAllowNegativeScore );
 	void AddPointsToTeam( int score, BOOL bAllowNegativeScore );
-	BOOL AddPlayerItem( CBasePlayerItem *pItem );
 	BOOL RemovePlayerItem( CBasePlayerItem *pItem );
 	void DropPlayerItem ( char *pszItemName );
 	BOOL HasPlayerItem( CBasePlayerItem *pCheckItem );
