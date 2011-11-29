@@ -77,10 +77,9 @@ public:
 	static TYPEDESCRIPTION m_SaveData[];
 
 	// CSSDK
-	BOOL			m_fPlantedC4;			//  96/101 - 
-	BOOL			m_fStartDefuse;			//  96/101 - 
+	BOOL			m_fStartDefuse;			//  96/101 - 1<<0
+	BOOL			m_fPlantedC4;			//  96/101 - 1<<8
 	EHANDLE			m_hDefuser;				//  97/102 - 
-											//  98/103 - 
 	float			m_flDefuseCountDown;	//  99/104 - 
 	float			m_flC4Blow;				// 100/105 - 
 	float			m_flNextFreqInterval;	// 101/106 -
@@ -90,15 +89,15 @@ public:
 	int				m_flAttenu;				// 105/110 -
 	float			m_flNextBlink;			// 106/111 -
 	float			m_flNextDefuseTime;  	// 107/112 -
-	BOOL			m_fJustBlew;			// 108/113 -
+	BOOL			m_fJustBlew;			// 108/113 - 1<<0
 	int				m_iTeam;				// 109/114 -
 	int				m_iC4Beep;				// 110/115 -
 	CBaseEntity*	m_pentCurBombTarget;	// 111/116 -
 	int				m_SGSmoke;				// 112/117 -
 	BOOL			m_fLightSmoke;			// 113/118 -
-	unsigned short	m_usEvent;				// 114/119 -
-	bool			m_bUnknow1;
-	bool			m_bUnknow2;
+	unsigned short	m_usEvent;				// 114/119 - & 1<<0 ?
+	bool			m_bSGMulti;				// 114/119 - 1<<16
+	bool			m_bSGDetonated;			// 114/119 - 1<<24
 	Vector			m_SGExplosionPos;		// 115->117/120->122 -
 	int				m_iNumBounce;			// 118/123 -
 	BOOL			m_fRegisteredSound;		// 119/124 - whether or not this grenade has issued its DANGER sound to the world sound list yet.			

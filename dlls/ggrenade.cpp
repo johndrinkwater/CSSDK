@@ -208,9 +208,9 @@ void CGrenade::BounceSound( void )
 
 	switch( RANDOM_LONG( 0, 2 ) )
 	{
-	case 0 : EMIT_SOUND( ENT( pev ), CHAN_VOICE, "weapons/grenade_hit1.wav", 0.25, ATTN_NORM );	break;
-	case 1 : EMIT_SOUND( ENT( pev ), CHAN_VOICE, "weapons/grenade_hit2.wav", 0.25, ATTN_NORM );	break;
-	case 2 : EMIT_SOUND( ENT( pev ), CHAN_VOICE, "weapons/grenade_hit3.wav", 0.25, ATTN_NORM );	break;
+		case 0 : EMIT_SOUND( ENT( pev ), CHAN_VOICE, "weapons/grenade_hit1.wav", 0.25, ATTN_NORM );	break;
+		case 1 : EMIT_SOUND( ENT( pev ), CHAN_VOICE, "weapons/grenade_hit2.wav", 0.25, ATTN_NORM );	break;
+		case 2 : EMIT_SOUND( ENT( pev ), CHAN_VOICE, "weapons/grenade_hit3.wav", 0.25, ATTN_NORM );	break;
 	}
 }
 
@@ -584,12 +584,12 @@ CGrenade* CGrenade::ShootSmokeGrenade( entvars_t *pevOwner, Vector vecStart, Vec
 	pGrenade->pev->angles	= pevOwner->angles;
 	pGrenade->pev->owner	= ENT( pevOwner );
 
-	pGrenade->m_bUnknow1 = false;
-	pGrenade->m_bUnknow2 = false;
-	pGrenade->m_usEvent	 = usEvent;
+	pGrenade->m_bSGMulti	 = false;
+	pGrenade->m_bSGDetonated = false;
+	pGrenade->m_usEvent		 = usEvent;
 
 	pGrenade->SetTouch( &CGrenade::BounceTouch );
-	//pGrenade->SetThink( &CGrenade::SG_TumbleThink );
+	pGrenade->SetThink( &CGrenade::SG_TumbleThink );
 
 	pGrenade->pev->dmgtime	= gpGlobals->time + time;
 	pGrenade->pev->nextthink= gpGlobals->time + 0.1;
@@ -672,7 +672,7 @@ void CGrenade::SG_Smoke( void )
 							randomDir.x * sin( 180 / M_PI ) + randomDir.y * sin( 180 / M_PI ),
 							cos( 180 / M_PI ) * 100.0, 
 							4, 
-							m_bUnknow1, 
+							m_bSGMulti, 
 							6 );
 	}
 
@@ -716,13 +716,13 @@ void CGrenade::SG_Detonate( void )
 
 			if( pGrenade && ( pGrenade->pev->origin - pev->origin ).Length() <= 250.0 && pGrenade->pev->dmgtime > gpGlobals->time )
 			{
-				m_bUnknow1 = true; 
+				m_bSGMulti = true; 
 			}
 		}
 	}
 
-	m_bUnknow2 = true;
-	PLAYBACK_EVENT_FULL( 0, NULL, m_usEvent, 0.0, pev->origin, (float*)&g_vecZero, 0.0, 0.0, 0, 1, m_bUnknow1, 0 ); 
+	m_bSGDetonated = true;
+	PLAYBACK_EVENT_FULL( 0, NULL, m_usEvent, 0.0, pev->origin, (float*)&g_vecZero, 0.0, 0.0, 0, 1, m_bSGMulti, 0 ); 
 
 	m_SGExplosionPos = pev->origin;
 
