@@ -475,6 +475,26 @@ Vector CBasePlayer :: GetGunPosition( )
 	return origin;
 }
 
+// CSSDK
+void CBasePlayer::AddAccount( int amount, bool trackChange )
+{
+	m_iAccount += amount;
+
+	if( m_iAccount < 0 )
+	{
+		m_iAccount = 0;
+	}
+	else if( m_iAccount > 16000 )
+	{
+		m_iAccount = 16000;
+	}
+
+	MESSAGE_BEGIN( MSG_ONE, gmsgMoney, NULL, ENT( pev ) );
+	WRITE_LONG( m_iAccount );
+	WRITE_BYTE( trackChange );
+	MESSAGE_END();
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );
