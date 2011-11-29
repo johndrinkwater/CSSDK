@@ -52,6 +52,12 @@
 #define TEAM_CT          2
 #define TEAM_SPECTATOR   3
 
+// 
+// Item type
+//
+#define ITEMSLOT_PRIMARY	1
+#define ITEMSLOT_SECONDARY	2
+
 //
 // generic player
 //

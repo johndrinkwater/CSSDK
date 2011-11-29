@@ -3851,67 +3851,79 @@ void CBasePlayer::CheatImpulseCommands( int iImpulse )
 #endif	// HLDEMO_BUILD
 }
 
+
 //
 // Add a weapon to the player (Item == Weapon == Selectable Object)
 //
-int CBasePlayer::AddPlayerItem( CBasePlayerItem *pItem )
+BOOL CBasePlayer::AddPlayerItem( CBasePlayerItem *pItem )
 {
 	CBasePlayerItem *pInsert;
-	
-	pInsert = m_rgpPlayerItems[pItem->iItemSlot()];
 
-	while (pInsert)
+	pInsert = m_rgpPlayerItems[ pItem->iItemSlot() ];
+
+	while( pInsert )
 	{
-		if (FClassnameIs( pInsert->pev, STRING( pItem->pev->classname) ))
+		if( FClassnameIs( pInsert->pev, STRING( pItem->pev->classname ) ) )
 		{
-			if (pItem->AddDuplicate( pInsert ))
+			if( pItem->AddDuplicate( pInsert ) )
 			{
-				g_pGameRules->PlayerGotWeapon ( this, pItem );
+				g_pGameRules->PlayerGotWeapon( this, pItem );
 				pItem->CheckRespawn();
 
 				// ugly hack to update clip w/o an update clip message
 				pInsert->UpdateItemInfo( );
-				if (m_pActiveItem)
-					m_pActiveItem->UpdateItemInfo( );
+
+				if( m_pActiveItem )
+					m_pActiveItem->UpdateItemInfo();
 
 				pItem->Kill( );
 			}
-			else if (gEvilImpulse101)
+			else if( gEvilImpulse101 )
 			{
 				// FIXME: remove anyway for deathmatch testing
-				pItem->Kill( );
+				pItem->Kill();
 			}
 			return FALSE;
 		}
+
 		pInsert = pInsert->m_pNext;
 	}
 
 
-	if (pItem->AddToPlayer( this ))
+	if( pItem->AddToPlayer( this ) )
 	{
-		g_pGameRules->PlayerGotWeapon ( this, pItem );
+		g_pGameRules->PlayerGotWeapon( this, pItem );
+
+		if( pItem->iItemSlot() == ITEMSLOT_PRIMARY )
+		{
+			m_fHasPrimaryWeapon = TRUE;
+		}
+
 		pItem->CheckRespawn();
 
-		pItem->m_pNext = m_rgpPlayerItems[pItem->iItemSlot()];
-		m_rgpPlayerItems[pItem->iItemSlot()] = pItem;
+		pItem->m_pNext = m_rgpPlayerItems[ pItem->iItemSlot() ];
+		m_rgpPlayerItems [ pItem->iItemSlot() ] = pItem;
+
+		if( HasShield() )
+		{
+			pev->gamestate = 0;
+		}
 
 		// should we switch to this item?
-		if ( g_pGameRules->FShouldSwitchWeapon( this, pItem ) )
+		if( g_pGameRules->FShouldSwitchWeapon( this, pItem ) && !IsProtectedByShield() )
 		{
 			SwitchWeapon( pItem );
 		}
 
 		return TRUE;
 	}
-	else if (gEvilImpulse101)
+	else if( gEvilImpulse101 )
 	{
 		// FIXME: remove anyway for deathmatch testing
-		pItem->Kill( );
+		pItem->Kill();
 	}
 	return FALSE;
 }
-
-
 
 int CBasePlayer::RemovePlayerItem( CBasePlayerItem *pItem )
 {
