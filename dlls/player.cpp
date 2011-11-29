@@ -477,12 +477,12 @@ Vector CBasePlayer :: GetGunPosition( )
 
 BOOL CBasePlayer::HasShield( void )
 {
-	return FALSE;
+	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );
 }
 
 BOOL CBasePlayer::IsProtectedByShield( void )
 {
-	return HasShield() && !!( m_iUserPrefs & USERPREFS_SHIELD_DRAWN );
+	return HasShield() && FBitSet( m_iUserPrefs, USERPREFS_SHIELD_DRAWN );
 }
 
 BOOL CBasePlayer::IsHittingShield( Vector const &vecDir, TraceResult* ptr )
