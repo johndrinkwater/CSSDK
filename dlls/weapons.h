@@ -347,7 +347,7 @@ typedef struct
 	int acost;
 } weapon_struct_t;
 
- weapon_struct_t g_weaponStruct[ MAX_WEAPONS ];
+extern weapon_struct_t g_weaponStruct[ MAX_WEAPONS ];
 
 
 // Items that the player has in their inventory that they can use
