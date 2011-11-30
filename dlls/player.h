@@ -234,6 +234,10 @@ public:
 	int					m_iClientFOV;	// client's known FOV
 	// usable player items 
 	CBasePlayerItem	*m_rgpPlayerItems[MAX_ITEM_TYPES];
+
+	// CSSDK
+	CBasePlayerItem *m_pLastPrimaryItem;							// 368/373 -
+
 	CBasePlayerItem *m_pActiveItem;
 	CBasePlayerItem *m_pClientActiveItem;  // client version of the active item
 	CBasePlayerItem *m_pLastItem;
@@ -337,6 +341,7 @@ public:
 	BOOL CanAffordDefuseKit( void );
 	BOOL CanAffordGrenade( void );
 	BOOL CanAffordPrimary( void );
+	BOOL CanAffordPrimaryAmmo( void );
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
