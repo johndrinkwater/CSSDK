@@ -526,15 +526,18 @@ BOOL CBasePlayer::CanAffordGrenade( void )
 
 BOOL CBasePlayer::CanAffordPrimary( void )
 {
-	weapon_struct_t* pWeaponStruct;
-
-	for( int i = 0; i < ARRAYSIZE( g_weaponStruct ); i++ )
+	if( m_iTeam == TEAM_CT || m_iTeam == TEAM_TERRORIST )
 	{
-		pWeaponStruct = &g_weaponStruct[ i ];
+		weapon_struct_t* pWeaponStruct;
 
-		if( pWeaponStruct->teams & m_iTeam && pWeaponStruct->slot == ITEMSLOT_PRIMARY && pWeaponStruct->cost <= m_iAccount )
+		for( int i = 0; i < ARRAYSIZE( g_weaponStruct ); i++ )
 		{
-			return TRUE;
+			pWeaponStruct = &g_weaponStruct[ i ];
+
+			if( pWeaponStruct->teams & m_iTeam && pWeaponStruct->slot == ITEMSLOT_PRIMARY && pWeaponStruct->cost <= m_iAccount )
+			{
+				return TRUE;
+			}
 		}
 	}
 
