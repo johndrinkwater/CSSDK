@@ -334,6 +334,7 @@ public:
 	void AllowAutoFollow( void );
 	void Blind( float flTime, float flHoldtime, float flDuration, int iAlpha );
 	BOOL CanAffordArmor( void );
+	BOOL CanAffordDefuseKit( void );
 	void SetBombIcon( int status );
 	void SetProgressBarTime( int time );
 	void SetScoreboardAttributes( CBasePlayer* pPlayer );
