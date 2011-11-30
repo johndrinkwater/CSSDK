@@ -326,6 +326,7 @@ public:
 	void AllowAutoFollow( void );
 
 	void SetBombIcon( int status );
+	void SetProgressBarTime( int time );
 	void SetScoreboardAttributes( CBasePlayer* pPlayer );
 
 	void AddPoints( int score, BOOL bAllowNegativeScore );
