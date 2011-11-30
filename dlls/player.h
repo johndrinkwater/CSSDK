@@ -394,7 +394,6 @@ public:
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
-	void SetProgressBarTime( int time );
 
 	float m_flStartCharge;
 	float m_flAmmoStartCharge;

@@ -5032,43 +5032,6 @@ void CBasePlayer::ResetMaxSpeed()
 	pev->maxspeed = flSpeed;
 }
 
-//CSSDK
-void CBasePlayer::SetProgressBarTime( int time )
-{
-	if( time )
-	{
-		m_flProgressBarStartTime	= gpGlobals->time;
-		m_flProgressBarEndTime		= gpGlobals->time + time;
-	}
-	else
-	{
-		m_flProgressBarStartTime	= 0;
-		m_flProgressBarEndTime		= 0;
-	}
-
-	MESSAGE_BEGIN( MSG_ONE, gmsgBarTime, NULL, ENT( pev ) );
-		WRITE_SHORT( time );
-	MESSAGE_END();
-
-	int playerIndex = entindex();
-	CBaseEntity* pEntity = NULL;
-
-	while( ( pEntity = UTIL_FindEntityByClassname( pEntity, "player" ) ) != NULL )
-	{
-		if( !FNullEnt( pEntity ) )
-		{
-			CBasePlayer* pPlayer = GetClassPtr( (CBasePlayer *)VARS( pEntity->pev ) );
-
-			if( pPlayer->pev->iuser1 && pPlayer->pev->iuser2 == playerIndex )
-			{
-				MESSAGE_BEGIN( MSG_ONE, gmsgBarTime, NULL, ENT( pev ) );
-					WRITE_SHORT( time );
-				MESSAGE_END();
-			}
-		}
-
-	}
-}
 
 //=========================================================
 // Dead HEV suit prop
