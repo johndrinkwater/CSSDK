@@ -333,6 +333,7 @@ public:
 	BOOL AddPlayerItem( CBasePlayerItem *pItem );
 	void AllowAutoFollow( void );
 	void Blind( float flTime, float flHoldtime, float flDuration, int iAlpha );
+	BOOL CanAffordArmor( void );
 	void SetBombIcon( int status );
 	void SetProgressBarTime( int time );
 	void SetScoreboardAttributes( CBasePlayer* pPlayer );

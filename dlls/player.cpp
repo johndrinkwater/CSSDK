@@ -509,6 +509,11 @@ void CBasePlayer::Blind( float flTime, float flHoldtime, float flDuration, int i
 	m_iFlashAlpha     = iAlpha;
 }
 
+BOOL CBasePlayer::CanAffordArmor( void )
+{
+	return ( m_iKevlar != 1 || pev->armorvalue != 100 || m_iAccount < 350 ) ? m_iAccount >= 650 : TRUE;
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );
