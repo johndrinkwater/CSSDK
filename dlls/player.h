@@ -150,7 +150,9 @@ public:
 
 	BOOL				m_fHasPrimaryWeapon;						// 116/121 - 
 
-	BOOL				m_fHasDefuseKit;							// 193/198 -
+	// Bomb
+	BOOL				m_fCanPlantBomb;							// 193/198 - (1<<8)
+	BOOL				m_fHasDefuseKit;							// 193/198 - (1<<16)
 
 	BOOL				m_fIsVIP;									// 209/214 - (1<<8)
 	BOOL				m_fBombDefusing;							// 232/237 - (1<<8)
@@ -322,6 +324,8 @@ public:
 	void AddAccount( int amount, bool trackChange );
 	BOOL AddPlayerItem( CBasePlayerItem *pItem );
 	void AllowAutoFollow( void );
+
+	void SetBombIcon( int status );
 
 	void AddPoints( int score, BOOL bAllowNegativeScore );
 	void AddPointsToTeam( int score, BOOL bAllowNegativeScore );

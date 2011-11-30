@@ -533,6 +533,27 @@ BOOL CBasePlayer::IsHittingShield( Vector const &vecDir, TraceResult* ptr )
 	return false;
 }
 
+void CBasePlayer::SetBombIcon( int status )
+{
+	MESSAGE_BEGIN( MSG_ONE, gmsgStatusIcon, 0, ENT( pev ) );
+	if( m_fCanPlantBomb )
+	{
+		WRITE_BYTE( status ? 2 : 1 );
+		WRITE_STRING( "c4" );
+		WRITE_BYTE( 0 );
+		WRITE_BYTE( 160 );
+		WRITE_BYTE( 0 );
+	}
+	else
+	{
+		WRITE_BYTE( 0 );
+		WRITE_STRING( "c4");
+	}
+	MESSAGE_END();
+
+	//SetScoreboardAttributes( NULL );
+}
+
 void CBasePlayer::TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir, TraceResult *ptr, int bitsDamageType )
 {
 	BOOL shouldBleed = TRUE;
