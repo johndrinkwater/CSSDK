@@ -337,6 +337,9 @@ public:
 	BOOL CanAffordDefuseKit( void );
 	BOOL CanAffordGrenade( void );
 	BOOL CanAffordPrimary( void );
+	BOOL HasShield( void );
+	BOOL IsProtectedByShield( void );
+	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
 	void SetBombIcon( int status );
 	void SetProgressBarTime( int time );
 	void SetScoreboardAttributes( CBasePlayer* pPlayer );
@@ -389,11 +392,6 @@ public:
 	int GetCustomDecalFrames( void );
 
 	void CBasePlayer::TabulateAmmo( void );
-
-	// CSSDK
-	BOOL HasShield( void );
-	BOOL IsProtectedByShield( void );
-	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
 
 	float m_flStartCharge;
 	float m_flAmmoStartCharge;
