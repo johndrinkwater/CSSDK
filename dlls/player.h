@@ -335,6 +335,7 @@ public:
 	void Blind( float flTime, float flHoldtime, float flDuration, int iAlpha );
 	BOOL CanAffordArmor( void );
 	BOOL CanAffordDefuseKit( void );
+	BOOL CanAffordGrenade( void );
 	void SetBombIcon( int status );
 	void SetProgressBarTime( int time );
 	void SetScoreboardAttributes( CBasePlayer* pPlayer );

@@ -519,6 +519,11 @@ BOOL CBasePlayer::CanAffordDefuseKit( void )
 	return m_iAccount > 200;
 }
 
+BOOL CBasePlayer::CanAffordGrenade( void )
+{
+	return m_iAccount < 300 ? m_iAccount >= 200 : TRUE;
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );
