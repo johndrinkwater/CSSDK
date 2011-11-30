@@ -326,6 +326,7 @@ public:
 	void AllowAutoFollow( void );
 
 	void SetBombIcon( int status );
+	void SetScoreboardAttributes( CBasePlayer* pPlayer );
 
 	void AddPoints( int score, BOOL bAllowNegativeScore );
 	void AddPointsToTeam( int score, BOOL bAllowNegativeScore );

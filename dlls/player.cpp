@@ -554,6 +554,56 @@ void CBasePlayer::SetBombIcon( int status )
 	//SetScoreboardAttributes( NULL );
 }
 
+void CBasePlayer::SetScoreboardAttributes( CBasePlayer* pPlayer )
+{
+	if( pPlayer )
+	{
+		int flags = pev->deadflag != DEAD_NO;
+
+		if( m_fCanPlantBomb )
+			flags |= ( 1 << 1 );
+
+		if( m_fIsVIP )
+			flags |= ( 1 << 2 );
+
+		if( gmsgScoreAttrib )
+		{
+			MESSAGE_BEGIN( MSG_ONE, gmsgScoreAttrib, NULL, ENT( pPlayer->pev ) );
+				WRITE_BYTE( ENTINDEX( pPlayer->edict() ) );
+				WRITE_BYTE( flags );
+			MESSAGE_END();
+		}
+	}
+	else
+	{
+		CBaseEntity *pPlayer = NULL;
+
+		for( int i = 1; i <= gpGlobals->maxClients; ++i )
+		{
+			pPlayer = UTIL_PlayerByIndex( i );
+
+			if( pPlayer )
+			{
+				int flags = pev->deadflag != DEAD_NO;
+
+				if( m_fCanPlantBomb )
+					flags |= ( 1 << 1 );
+
+				if( m_fIsVIP )
+					flags |= ( 1 << 2 );
+
+				if( gmsgScoreAttrib )
+				{
+					MESSAGE_BEGIN( MSG_ONE, gmsgScoreAttrib, NULL, ENT( pPlayer->pev ) );
+						WRITE_BYTE( ENTINDEX( pPlayer->edict() ) );
+						WRITE_BYTE( flags );
+					MESSAGE_END();
+				}
+			}
+		}
+	}
+}
+
 void CBasePlayer::TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir, TraceResult *ptr, int bitsDamageType )
 {
 	BOOL shouldBleed = TRUE;
