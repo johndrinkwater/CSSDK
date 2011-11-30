@@ -237,6 +237,7 @@ public:
 
 	// CSSDK
 	CBasePlayerItem *m_pLastPrimaryItem;							// 368/373 -
+	CBasePlayerItem *m_pLastSecondaryItem;							// 369/374 -
 
 	CBasePlayerItem *m_pActiveItem;
 	CBasePlayerItem *m_pClientActiveItem;  // client version of the active item
@@ -342,6 +343,7 @@ public:
 	BOOL CanAffordGrenade( void );
 	BOOL CanAffordPrimary( void );
 	BOOL CanAffordPrimaryAmmo( void );
+	BOOL CanAffordSecondaryAmmo( void );
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );

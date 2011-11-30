@@ -564,6 +564,26 @@ BOOL CBasePlayer::CanAffordPrimaryAmmo( void )
 	return FALSE;
 }
 
+BOOL CBasePlayer::CanAffordSecondaryAmmo( void )
+{
+	if( m_pLastSecondaryItem )
+	{
+		weapon_struct_t* pWeaponStruct;
+
+		for( int i = 0; i < ARRAYSIZE( g_weaponStruct ); i++ )
+		{
+			pWeaponStruct = &g_weaponStruct[ i ];
+
+			if( pWeaponStruct->id == m_pLastSecondaryItem->m_iId && pWeaponStruct->cost <= m_iAccount )
+			{
+				return TRUE;
+			}
+		}
+	}
+
+	return FALSE;
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );
