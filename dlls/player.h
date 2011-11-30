@@ -336,6 +336,7 @@ public:
 	BOOL CanAffordArmor( void );
 	BOOL CanAffordDefuseKit( void );
 	BOOL CanAffordGrenade( void );
+	BOOL CanAffordPrimary( void );
 	void SetBombIcon( int status );
 	void SetProgressBarTime( int time );
 	void SetScoreboardAttributes( CBasePlayer* pPlayer );

@@ -524,6 +524,23 @@ BOOL CBasePlayer::CanAffordGrenade( void )
 	return m_iAccount < 300 ? m_iAccount >= 200 : TRUE;
 }
 
+BOOL CBasePlayer::CanAffordPrimary( void )
+{
+	weapon_struct_t* pWeaponStruct;
+
+	for( int i = 0; i < ARRAYSIZE( g_weaponStruct ); i++ )
+	{
+		pWeaponStruct = &g_weaponStruct[ i ];
+
+		if( pWeaponStruct->teams & m_iTeam && pWeaponStruct->slot == ITEMSLOT_PRIMARY && pWeaponStruct->cost <= m_iAccount )
+		{
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );
