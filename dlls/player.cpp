@@ -584,6 +584,54 @@ BOOL CBasePlayer::CanAffordSecondaryAmmo( void )
 	return FALSE;
 }
 
+BOOL CBasePlayer::CanPlayerBuy( bool bDisplayMessage )
+{
+	if( !g_pGameRules->IsMultiplayer() )
+	{
+		/*! @todo Implements me :
+		return g_pGameRules->PlayerCanBuy( this ); // CHalfLifeTraining */
+	}
+
+	if( pev->deadflag || !FBitSet( m_fClientMapZone, MAPZONE_BUY ) )
+	{
+		return FALSE;
+	}
+
+	int flBuyTime = (int)CVAR_GET_FLOAT( "mp_buytime" ) * 60;
+
+	if( flBuyTime < 15 )
+	{
+		flBuyTime = 15;
+		CVAR_SET_FLOAT( "mp_buytime", 0.25 );
+	}
+
+	if( flBuyTime < gpGlobals->time - g_pGameRules->m_flRoundCount && bDisplayMessage )
+	{
+		ClientPrint( pev, HUD_PRINTCENTER, "#Cant_buy", UTIL_dtos1( flBuyTime ) );
+		return FALSE;
+	}
+
+	if( m_fIsVIP && bDisplayMessage )
+	{
+		ClientPrint( pev, HUD_PRINTCENTER, "#VIP_cant_buy" );
+		return FALSE;
+	}
+
+	if( g_pGameRules->m_bCTCantBuy && m_iTeam == TEAM_CT && bDisplayMessage )
+	{
+		ClientPrint( pev, HUD_PRINTCENTER, "#CT_cant_buy" );
+		return FALSE;
+	}
+
+	if( g_pGameRules->m_bTCantBuy && m_iTeam == TEAM_TERRORIST && bDisplayMessage )
+	{
+		ClientPrint( pev, HUD_PRINTCENTER, "#Terrorist_cant_buy" );
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );

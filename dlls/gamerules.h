@@ -205,6 +205,9 @@ public:
 
 	float			m_flC4DetonateDelay;		// 140/132 -
 
+	bool			m_bCTCantBuy;				// 184/176 -
+	bool			m_bTCantBuy;				// 185/177 -
+
 	float			m_flBombRadius;				// 188/180 -
 };
 

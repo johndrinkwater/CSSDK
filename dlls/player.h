@@ -52,6 +52,15 @@
 #define TEAM_CT          2
 #define TEAM_SPECTATOR   3
 
+//
+// m_fMapZone, m_fClientMapZone
+//
+#define MAPZONE_BUY        ( 1 << 0 )
+#define MAPZONE_BOMBTARGET ( 1 << 1 ) // (if C4 Carrier)
+#define MAPZONE_HOSTAGE    ( 1 << 2 )
+#define MAPZONE_ESCAPE     ( 1 << 3 )
+#define MAPZONE_VIP        ( 1 << 4 )
+
 // 
 // Item type
 //
@@ -344,6 +353,7 @@ public:
 	BOOL CanAffordPrimary( void );
 	BOOL CanAffordPrimaryAmmo( void );
 	BOOL CanAffordSecondaryAmmo( void );
+	BOOL CanPlayerBuy( bool bDisplayMessage );
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
