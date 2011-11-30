@@ -617,7 +617,7 @@ void CBasePlayer::SetProgressBarTime( int time )
 
 	while( ( pEntity = UTIL_FindEntityByClassname( pEntity, "player" ) ) != NULL )
 	{
-		if( !FNullEnt( pEntity ) )
+		if( !FNullEnt( pEntity->edict() ) )
 		{
 			CBasePlayer* pPlayer = GetClassPtr( (CBasePlayer *)VARS( pEntity->pev ) );
 
