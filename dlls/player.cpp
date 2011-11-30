@@ -798,6 +798,14 @@ void CBasePlayer::TraceAttack( entvars_t *pevAttacker, float flDamage, Vector ve
 	AddMultiDamage( pevAttacker, this, flDamage, bitsDamageType );
 }
 
+void CBasePlayer::UpdateShieldCrosshair( bool shouldRemove )
+{
+	if( shouldRemove )
+		ClearBits( m_iHideHUD, HIDEHUD_CROSSHAIR );
+	else
+		SetBits( m_iHideHUD, HIDEHUD_CROSSHAIR );
+}
+
 
 /*
 	Take some damage.  

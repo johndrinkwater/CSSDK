@@ -324,10 +324,10 @@ public:
 	void AddAccount( int amount, bool trackChange );
 	BOOL AddPlayerItem( CBasePlayerItem *pItem );
 	void AllowAutoFollow( void );
-
 	void SetBombIcon( int status );
 	void SetProgressBarTime( int time );
 	void SetScoreboardAttributes( CBasePlayer* pPlayer );
+	void UpdateShieldCrosshair( bool shouldRemove );
 
 	void AddPoints( int score, BOOL bAllowNegativeScore );
 	void AddPointsToTeam( int score, BOOL bAllowNegativeScore );
