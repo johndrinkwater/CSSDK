@@ -254,6 +254,14 @@ public:
 	char m_szTeamName[TEAM_NAME_LENGTH];
 
 	// CSSDK
+
+	// Flashbang
+	float	m_flFlashedUntil;			// 514/519 - 
+	float	m_flFlashedAt;				// 515/520 - 
+	float	m_flFlashHoldTime;			// 516/521 - 
+	float	m_flFlashDuration;			// 517/522 - 
+	float	m_iFlashAlpha;				// 518/523 - 
+
 	float	m_flNextAutoFollowTime;		// 519/524 -
 
 	virtual void Spawn( void );
@@ -324,6 +332,7 @@ public:
 	void AddAccount( int amount, bool trackChange );
 	BOOL AddPlayerItem( CBasePlayerItem *pItem );
 	void AllowAutoFollow( void );
+	void Blind( float flTime, float flHoldtime, float flDuration, int iAlpha );
 	void SetBombIcon( int status );
 	void SetProgressBarTime( int time );
 	void SetScoreboardAttributes( CBasePlayer* pPlayer );

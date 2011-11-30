@@ -500,6 +500,15 @@ void CBasePlayer::AllowAutoFollow( void )
 	m_flNextAutoFollowTime = 0;
 }
 
+void CBasePlayer::Blind( float flTime, float flHoldtime, float flDuration, int iAlpha )
+{
+	m_flFlashedUntil  = gpGlobals->time + flTime;
+	m_flFlashedAt     = gpGlobals->time;
+	m_flFlashHoldTime = flHoldtime;
+	m_flFlashDuration = flDuration;
+	m_iFlashAlpha     = iAlpha;
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );
