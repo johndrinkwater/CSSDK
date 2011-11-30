@@ -551,7 +551,7 @@ void CBasePlayer::SetBombIcon( int status )
 	}
 	MESSAGE_END();
 
-	//SetScoreboardAttributes( NULL );
+	SetScoreboardAttributes( NULL );
 }
 
 void CBasePlayer::SetScoreboardAttributes( CBasePlayer* pPlayer )
