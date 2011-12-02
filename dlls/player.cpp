@@ -35,6 +35,7 @@
 #include "gamerules.h"
 #include "game.h"
 #include "hltv.h"
+#include "pm_shared.h"
 
 // #define DUCKFIX
 
@@ -1051,6 +1052,92 @@ BOOL CBasePlayer::IsHittingShield( Vector const &vecDir, TraceResult* ptr )
 // 	return DotProduct( vec2LOS , gpGlobals->v_forward.Make2D() ) < -0.87;
 
 	return false;
+}
+
+void CBasePlayer::Radio( const char* szAudioCode, const char* szDisplayCode, short pitch, bool displayIcon )
+{
+	if( IsPlayer() && ( pev->deadflag == DEAD_NO || IsBot() ) )
+	{
+		CBaseEntity* pEntity = NULL;
+		CBasePlayer* pPlayer = NULL;
+
+		bool sendAudio = false;
+
+		while( ( pEntity = UTIL_FindEntityByClassname( pEntity, "player" ) ) != NULL )
+		{
+			if( FNullEnt( pEntity->edict() ) )
+			{
+				pPlayer = GetClassPtr( (CBasePlayer *)pEntity->pev );
+
+				if( pEntity->IsPlayer() )
+				{
+					if( ~pEntity->pev->flags & FL_DORMANT && pPlayer && pPlayer->m_iTeam == m_iTeam )
+					{
+						sendAudio = true;
+					}
+				}
+				else if( pPlayer && ( pPlayer->pev->iuser1 == OBS_CHASE_LOCKED || pPlayer->pev->iuser1 == OBS_CHASE_FREE || pPlayer->pev->iuser1 == OBS_IN_EYE ) )
+				{
+					if( pPlayer->m_hObserverTarget )
+					{
+						CBasePlayer* pTarget = (CBasePlayer *)CBaseEntity::Instance( pPlayer->m_hObserverTarget->pev );
+
+						if( pTarget && pTarget->m_iTeam == m_iTeam )
+						{
+							sendAudio = true;
+						}
+					}
+				}
+
+				if( sendAudio && !pPlayer->m_fIgnoreRadio )
+				{
+					MESSAGE_BEGIN( MSG_ONE, gmsgSendAudio, NULL, ENT( pPlayer->pev ) );
+						WRITE_BYTE( ENTINDEX( this->edict() ) );
+						WRITE_STRING( szAudioCode );
+						WRITE_SHORT( pitch );
+					MESSAGE_END();
+
+					if( szDisplayCode )
+					{
+						char* szLocation = NULL;
+
+						/*! @todo Implements me:
+						szLocation = TheNavAreaGrid->GetPlace( pev->origin );*/
+
+						/*! @todo Try to translate that. Ouch...
+						if( TheBotPhrases == -12 || (v21 = *(TheBotPhrases + 16), v22 = *v21, *v21 == v21) )
+							goto LABEL_36;
+						while ( *(*(v22 + 8) + 4) != v20 )
+						{
+							v22 = *v22;
+							if( v22 == v21 )
+								goto LABEL_36;
+						}
+						v27 = **(v22 + 8);
+						if( v27 )
+						{*/
+
+						/*! @todo Implements NumAsString() :
+						if( szLocation )
+							ClientPrint( pPlayer->pev, HUD_PRINTRADIO, NumAsString( ENTINDEX( this->edict() ) ), "#Game_radio_location", STRING( pev->netname ), szLocation, szDisplayCode );
+						else
+							ClientPrint( pPlayer->pev, HUD_PRINTRADIO, NumAsString( ENTINDEX( this->edict() ) ), "#Game_radio", STRING( pev->netname ), szDisplayCode, 0 );*/
+					}
+
+					if( displayIcon )
+					{
+						MESSAGE_BEGIN( MSG_ONE, SVC_TEMPENTITY, NULL, ENT( pPlayer->pev ) );
+							WRITE_BYTE( TE_PLAYERATTACHMENT );
+							WRITE_BYTE( ENTINDEX( this->edict() ) );
+							WRITE_COORD( 35 );
+							WRITE_SHORT( g_sModelIndexRadio );
+							WRITE_SHORT( 15 );
+						MESSAGE_END();
+					}
+				}
+			}
+		}
+	}
 }
 
 void CBasePlayer::SetBombIcon( int status )

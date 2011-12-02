@@ -180,6 +180,12 @@ public:
 	BOOL				m_fDefusekitItem;							// 129/134 - 1<<0
 	BOOL				m_fNvgGoggleItem;							// 129/134 - 1<<8	
 
+	// Radio
+	float				m_flNextIdleCheckTime;						// 190/195 -
+	float				m_flNextRadioGameTime;						// 191/196 -
+	int					m_iRadioLeft;								// 192/197 -
+	BOOL				m_fIgnoreRadio;								// 193/198 - (1<<0)
+
 	// Bomb
 	BOOL				m_fCanPlantBomb;							// 193/198 - (1<<8)
 	BOOL				m_fHasDefuseKit;							// 193/198 - (1<<16)
@@ -323,6 +329,9 @@ public:
 	virtual BOOL ShouldFadeOnDeath( void ) { return FALSE; }
 	virtual	BOOL IsPlayer( void ) { return TRUE; }			// Spectators should return FALSE for this, they aren't "players" as far as game logic is concerned
 
+	// CSSDK
+	virtual BOOL IsBot( void ) { return FALSE; }
+
 	virtual BOOL IsNetClient( void ) { return TRUE; }		// Bots should return FALSE for this, they can't receive NET messages
 															// Spectators should return TRUE for this
 	virtual const char *TeamID( void );
@@ -387,6 +396,7 @@ public:
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
+	void Radio( const char* szAudioCode, const char* szDisplayCode, short pitch, bool displayIcon );
 	void SetBombIcon( int status );
 	void SetProgressBarTime( int time );
 	void SetScoreboardAttributes( CBasePlayer* pPlayer );
