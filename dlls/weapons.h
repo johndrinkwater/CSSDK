@@ -421,6 +421,14 @@ public:
 };
 
 
+// m_fWeaponState
+#define WEAPONSTATE_USP_SILENCED       ( 1 << 0 )
+#define WEAPONSTATE_GLOCK18_BURST_MODE ( 1 << 1 )
+#define WEAPONSTATE_M4A1_SILENCED      ( 1 << 2 )
+#define WEAPONSTATE_ELITE_LEFT         ( 1 << 3 )
+#define WEAPONSTATE_FAMAS_BURST_MODE   ( 1 << 4 )
+#define WEAPONSTATE_SHIELD_DRAWN       ( 1 << 5 )
+
 // inventory items that 
 class CBasePlayerWeapon : public CBasePlayerItem
 {
@@ -684,6 +692,632 @@ public:
 private:
 	unsigned short m_usAk47;
 };
+
+class CAWP : public CBasePlayerWeapon
+{
+public:
+	void		 Spawn			( void );
+	void		 Precache		( void );
+	int			 iItemSlot		( void );
+	int			 GetItemInfo	( ItemInfo *p );
+	float		 GetMaxSpeed	( void );
+	virtual BOOL UseDecrement	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void AWPFire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				 m_iShell;
+	unsigned short	 m_usAwp;
+};
+
+class CC4 : public CBasePlayerWeapon
+{
+public:
+	void			KeyValue	( KeyValueData* pkvd );
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void WeaponIdle		( void );
+
+	void Holster();
+	void Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
+
+	BOOL	m_fStartedArming;		// 78/83 - m_fBombState & C4_STARTED_ARMING   (1<<0)
+	BOOL	m_fBombPlacedAnimation;	// 78/83 - m_fBombState & C4_PLACED_ANIMATION (1<<8)
+	float	m_flArmedTime;			// 79/84 -
+	BOOL	m_fUnknown80;			// 80/85 - 
+};
+
+class CDEAGLE : public CBasePlayerWeapon
+{
+public:
+	void			Spawn( void );
+	void			Precache( void );
+	int				iItemSlot( void );
+	BOOL			IsPistol( void );
+	int				GetItemInfo( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void DEAGLEFire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				m_iShell;
+	unsigned short	m_usDeagle;
+};
+
+class CELITE : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	BOOL			IsPistol	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void ELITEFire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				m_iShell;
+	unsigned short	m_usEliteLeft;
+	unsigned short	m_usEliteRight;
+};
+
+class CFamas : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void FamasFire		( float flSpread, float flCycleTime, BOOL fUseAutoAim, BOOL fUseBurst );
+
+private:
+	int				m_iShell;
+	//BOOL			m_bUnknown79; // Deploy, not used
+	unsigned short	m_usFamas;
+};
+
+class CFiveSeven : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	BOOL			IsPistol	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void FiveSevenFire	( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				m_iShell;
+	unsigned short	m_usFiveSeven;
+};
+
+class CFlashbang : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	BOOL			CanDrop		( void );
+	BOOL			CanDeploy	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	void ShieldSecondaryFire	( int animUp, int animDown );
+	void ResetPlayerShieldAnim	( void );
+	void SetPlayerShieldAnim	( void );
+
+	BOOL Deploy			( void );
+	void Holster		( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void WeaponIdle		( void );
+};
+
+class CG3SG1 : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void G3SG1Fire		( float flSpread, float flCycleTime, BOOL fUseBurst = FALSE );
+
+private:
+	int				m_iShell;
+	// BOOL		 m_bUnknown79;
+	unsigned short	m_usG3SG1;
+};
+
+class CGalil : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void GalilFire		( float flSpread, float flCycleTime, BOOL fUseBurst = FALSE );
+
+
+private:
+	int				m_iShell;
+	unsigned short	m_usGalil;
+};
+
+class CGLOCK18 : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	BOOL			IsPistol	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void GLOCK18Fire	( float flSpread, float flCycleTime, BOOL fFireBurst = FALSE );
+
+private:
+	int				m_iShell;
+	//BOOL			m_bUnknown79;
+	unsigned short	m_usGlock18;
+};
+
+class CHEGrenade : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	BOOL			CanDrop		( void );
+	BOOL			CanDeploy	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	void ShieldSecondaryFire	( int animUp, int animDown );
+	void ResetPlayerShieldAnim	( void );
+	void SetPlayerShieldAnim	( void );
+
+	BOOL Deploy			( void );
+	void Holster		( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void WeaponIdle		( void );
+
+	unsigned short m_usExplo;
+private:
+	//unsigned short m_usExplo;
+};
+
+class CKnife : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	BOOL			CanDrop		( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	void SetPlayerShieldAnim( void );
+
+	BOOL Deploy			( void );
+	void Holster		( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void WeaponIdle		( void );
+	void WeaponAnimation( int anim );
+
+	void EXPORT SwingAgain	( void );
+	void EXPORT Smack		( void );
+
+	BOOL Swing	( BOOL fFirst );
+	BOOL Stab	( BOOL fFirst );
+
+	TraceResult m_trHit;
+
+private:
+	unsigned short m_usKnife; // 92/96 ?
+};
+
+class CM3 : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+
+private:
+	int				m_iShell;
+	unsigned short	m_usM3;
+};
+
+class CM4A1 : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	float			GetMaxSpeed	( void );
+	virtual BOOL	UseDecrement( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void M4A1Fire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				m_iShell;				// 78
+	//BOOL			m_bUnknown79;			// 79
+	unsigned short	m_usM4A1;
+};
+
+class CM249 : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	float			GetMaxSpeed	( void );
+	virtual BOOL	UseDecrement( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void M249Fire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				m_iShell;		// 78
+	//BOOL			m_bUnknown79;	// 79
+	unsigned short	 m_usM249;		// 80
+};
+
+class CMAC10 : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	float			GetMaxSpeed	( void );
+	virtual BOOL	UseDecrement( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void MAC10Fire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				m_iShell;		// 78
+	//BOOL			m_bUnknown79;	// 79
+	unsigned short	m_usMAC10;		// 80
+};
+
+class CMP5N : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	float			GetMaxSpeed	( void );
+	virtual BOOL	UseDecrement( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void MP5NFire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+
+	int				m_iShell;		// 78
+	//BOOL			m_bUnknown79;	// 79
+	unsigned short	m_usMP5N;		// 80
+};
+
+class CP90 : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	float			GetMaxSpeed	( void );
+	virtual BOOL	UseDecrement( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void P90Fire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				m_iShell;			// 78
+	//BOOL			m_bUnknown79;		// 79
+	unsigned short	m_usP90;			// 80
+};
+
+class CP228 : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	BOOL			IsPistol	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void P228Fire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				m_iShell;
+	unsigned short	m_usP228;
+};
+
+class CSCOUT : public CBasePlayerWeapon
+{
+public:
+	void		 Spawn			( void );
+	void		 Precache		( void );
+	int			 iItemSlot		( void );
+	int			 GetItemInfo	( ItemInfo *p );
+	float		 GetMaxSpeed	( void );
+	virtual BOOL UseDecrement	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void SCOUTFire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				m_iShell;
+	unsigned short	m_usSCOUT;
+};
+
+class CSG550 : public CBasePlayerWeapon
+{
+public:
+	void		 Spawn			( void );
+	void		 Precache		( void );
+	int			 iItemSlot		( void );
+	int			 GetItemInfo	( ItemInfo *p );
+	float		 GetMaxSpeed	( void );
+	virtual BOOL UseDecrement	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void SG550Fire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				m_iShell;
+	unsigned short	m_usSG550;
+};
+
+class CSG552 : public CBasePlayerWeapon
+{
+public:
+	void		 Spawn			( void );
+	void		 Precache		( void );
+	int			 iItemSlot		( void );
+	int			 GetItemInfo	( ItemInfo *p );
+	float		 GetMaxSpeed	( void );
+	virtual BOOL UseDecrement	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void SG552Fire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				m_iShell;
+	unsigned short	m_usSG552;
+};
+
+class CSmokeGrenade : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	BOOL			CanDrop		( void );
+	BOOL			CanDeploy	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	void ShieldSecondaryFire	( int animUp, int animDown );
+	void ResetPlayerShieldAnim	( void );
+	void SetPlayerShieldAnim	( void );
+
+	BOOL Deploy			( void );
+	void Holster		( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void WeaponIdle		( void );
+
+	unsigned short m_usSmoke;
+private:
+	//unsigned short m_usSmoke;
+};
+
+class CTMP : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	float			GetMaxSpeed	( void );
+	virtual BOOL	UseDecrement( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void TMPFire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				m_iShell;		// 78
+	//BOOL			m_bUnknown79;	// 79
+	unsigned short	m_usTMP;	// 80
+};
+
+class CUMP45 : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	float			GetMaxSpeed	( void );
+	virtual BOOL	UseDecrement( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void UMP45Fire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				m_iShell;		// 78
+	//BOOL			m_bUnknown79;	// 79
+	unsigned short	m_usUMP45;		// 80
+};
+
+class CUSP : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	BOOL			IsPistol	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void SecondaryAttack( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+	void USPFire		( float flSpread, float flCycleTime, BOOL fUseSemi = FALSE );
+
+private:
+	int				m_iShell;
+	unsigned short	m_usUSP;
+};
+
+class CXM1014 : public CBasePlayerWeapon
+{
+public:
+	void			Spawn		( void );
+	void			Precache	( void );
+	int				iItemSlot	( void );
+	int				GetItemInfo	( ItemInfo *p );
+	virtual BOOL	UseDecrement( void );
+	float			GetMaxSpeed	( void );
+
+	BOOL Deploy			( void );
+	void PrimaryAttack	( void );
+	void Reload			( void );
+	void WeaponIdle		( void );
+
+private:
+	int				m_iShell;
+	unsigned short	m_usXM1014;
+};
+
 
 
 

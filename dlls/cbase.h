@@ -350,13 +350,24 @@ public:
 	int ammo_hornets;
 	int ammo_argrens;
 
-	// CSSDK
+	// CSSDK - Unordered.
 	int ammo_762nato;
 	int ammo_556Nato;
+	int ammo_338Magnum;
+	int ammo_50ae;
+	int ammo_556nato;
+	int ammo_57mm;
+	int ammo_556natobox;
+	int ammo_45acp;
+	int ammo_357sig;
 
-	//Special stuff for grenades and satchels.
-	float m_flStartThrow;
-	float m_flReleaseThrow;
+	// Grenade and Satchel.
+	float m_flStartThrow;	// 30/33
+	float m_flReleaseThrow; // 31/34
+
+	// Knife.
+	int m_iSwing;			// 32/35
+
 	int m_chargeReady;
 	int m_fInAttack;
 
