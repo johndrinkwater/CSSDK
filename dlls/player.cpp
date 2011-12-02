@@ -1021,6 +1021,14 @@ void CBasePlayer::DropShield( bool bDeployActiveItem )
 	}
 }
 
+void CBasePlayer::Duck( void )
+{
+	if( pev->button & IN_DUCK ) 
+	{
+		SetAnimation( PLAYER_WALK );
+	}
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );
@@ -2571,16 +2579,7 @@ void FixPlayerCrouchStuck( edict_t *pPlayer )
 	}
 }
 
-void CBasePlayer::Duck( )
-{
-	if (pev->button & IN_DUCK) 
-	{
-		if ( m_IdealActivity != ACT_LEAP )
-		{
-			SetAnimation( PLAYER_WALK );
-		}
-	}
-}
+
 
 //
 // ID's player as such.

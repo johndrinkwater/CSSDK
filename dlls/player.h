@@ -313,7 +313,6 @@ public:
 
 //	virtual void Think( void );
 	virtual void Jump( void );
-	virtual void Duck( void );
 	virtual void PreThink( void );
 	virtual void PostThink( void );
 	virtual Vector GetGunPosition( void );
@@ -393,6 +392,7 @@ public:
 	void Disappear( void );
 	void DropPlayerItem ( char *pszItemName );
 	void DropShield( bool bDeployActiveItem );
+	virtual void Duck( void );
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
