@@ -328,7 +328,6 @@ public:
 	void			FlashlightTurnOff( void );
 	
 	void UpdatePlayerSound ( void );
-	void DeathSound ( void );
 
 	int Classify ( void );
 	void SetAnimation( PLAYER_ANIM playerAnim );
@@ -357,6 +356,7 @@ public:
 	BOOL CanSwitchObserverModes( void );
 	void CheckPowerups( entvars_s* pPlayer );
 	void ClearAutoBuyData( void );
+	void DeathSound( void );
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
