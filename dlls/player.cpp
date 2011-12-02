@@ -632,6 +632,11 @@ BOOL CBasePlayer::CanPlayerBuy( bool bDisplayMessage )
 	return TRUE;
 }
 
+BOOL CBasePlayer::CanSwitchObserverModes( void )
+{
+	return m_fObserverAutoDirector;
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );

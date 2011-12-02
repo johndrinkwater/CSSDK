@@ -354,6 +354,7 @@ public:
 	BOOL CanAffordPrimaryAmmo( void );
 	BOOL CanAffordSecondaryAmmo( void );
 	BOOL CanPlayerBuy( bool bDisplayMessage );
+	BOOL CanSwitchObserverModes( void );
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
@@ -432,6 +433,8 @@ public:
 	int		m_iUserPrefs;				// 510/515 - 	
 	float	m_flProgressBarStartTime;	// 605/610 -
 	float	m_flProgressBarEndTime;		// 606/611 -
+
+	int		m_fObserverAutoDirector;	// 607/612 - 1<<8
 };
 
 #define AUTOAIM_2DEGREES  0.0348994967025
