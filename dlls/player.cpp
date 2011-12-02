@@ -637,6 +637,14 @@ BOOL CBasePlayer::CanSwitchObserverModes( void )
 	return m_fObserverAutoDirector;
 }
 
+void CBasePlayer::CheckPowerups( entvars_s*	pPlayer )
+{
+	if( pPlayer->health )
+	{
+		pPlayer->modelindex = g_ulModelIndexPlayer;
+	}
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );

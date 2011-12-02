@@ -355,6 +355,7 @@ public:
 	BOOL CanAffordSecondaryAmmo( void );
 	BOOL CanPlayerBuy( bool bDisplayMessage );
 	BOOL CanSwitchObserverModes( void );
+	void CheckPowerups( entvars_s* pPlayer );
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
