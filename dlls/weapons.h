@@ -382,6 +382,7 @@ public:
 
 	// CSSDK
 	virtual float GetMaxSpeed( void ) { return 0.0; };
+	virtual BOOL CanDrop( void ) { return TRUE; };
 
 	virtual void ItemPreFrame( void )	{ return; }		// called each frame by the player PreThink
 	virtual void ItemPostFrame( void ) { return; }		// called each frame by the player PostThink

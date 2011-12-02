@@ -827,11 +827,11 @@ void CBasePlayer::DropPlayerItem ( char *pszItemName )
 	// item we want to drop and hit a BREAK;  pWeapon is the item.
 	if( pWeapon )
 	{
-		/*if( !pWeapon->CanDrop() )
+		if( !pWeapon->CanDrop() )
 		{
 			ClientPrint( this->pev, HUD_PRINTCENTER, "#Weapon_Cannot_Be_Dropped" );
 			return;
-		}*/
+		}
 
 		UTIL_MakeVectors ( pev->angles ); 
 		pev->weapons &= ~( 1 << pWeapon->m_iId ); // take item off hud
@@ -958,7 +958,7 @@ void CBasePlayer::DropShield( bool bDeployActiveItem )
 
 	CBasePlayerWeapon* pActiveItem = (CBasePlayerWeapon *)m_pActiveItem;
 
-	if( !pActiveItem /*|| pActiveItem->CanDrop() */ )
+	if( !pActiveItem || pActiveItem->CanDrop() )
 	{
 		if( pActiveItem )
 		{
