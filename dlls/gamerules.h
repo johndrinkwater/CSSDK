@@ -211,6 +211,10 @@ public:
 	bool			m_bTCantBuy;				// 185/177 -
 
 	float			m_flBombRadius;				// 188/180 -
+
+	int				m_iConsecutiveVIP;			// 192/184 -
+
+	CBasePlayer*	m_pVIP;						// 636/644 - 
 };
 
 extern CGameRules *InstallGameRules( void );

@@ -52,6 +52,22 @@
 #define TEAM_CT          2
 #define TEAM_SPECTATOR   3
 
+enum CsInternalModel 
+{
+	CS_DONTCHANGE = 0,
+	CS_CT_URBAN = 1,
+	CS_T_TERROR = 2,
+	CS_T_LEET = 3,
+	CS_T_ARCTIC = 4,
+	CS_CT_GSG9 = 5,
+	CS_CT_GIGN = 6,
+	CS_CT_SAS = 7,
+	CS_T_GUERILLA = 8,
+	CS_CT_VIP = 9,
+	CZ_T_MILITIA = 10,
+	CZ_CT_SPETSNAZ = 11
+};
+
 //
 // m_iMenu
 //
@@ -176,6 +192,8 @@ public:
 	int					m_iAccount;									// 115/120 - 
 
 	BOOL				m_fHasPrimaryWeapon;						// 116/121 - 
+
+	int					m_iInternalModel;							// 126/131 - 
 
 	BOOL				m_fDefusekitItem;							// 129/134 - 1<<0
 	BOOL				m_fNvgGoggleItem;							// 129/134 - 1<<8	
@@ -397,6 +415,7 @@ public:
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
+	void MakeVIP( void );
 	BOOL NeedsArmor( void );
 	BOOL NeedsDefuseKit( void );
 	BOOL NeedsGrenade( void );

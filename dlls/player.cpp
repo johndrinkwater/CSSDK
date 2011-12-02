@@ -1103,6 +1103,27 @@ BOOL CBasePlayer::IsHittingShield( Vector const &vecDir, TraceResult* ptr )
 	return false;
 }
 
+void CBasePlayer::MakeVIP( void )
+{
+	pev->body = 0;
+
+	m_iInternalModel = CS_CT_VIP;
+
+	g_engfuncs.pfnSetClientKeyValue( this->entindex(), g_engfuncs.pfnGetInfoKeyBuffer( this->edict() ), "model", "vip" );
+
+	UTIL_LogPrintf( "\"%s<%i><%s><CT>\" triggered \"Became_VIP\"\n", 
+		STRING( pev->netname ),
+		GETPLAYERAUTHID( this->edict() ),
+		GETPLAYERUSERID( this->edict() ) );
+
+	m_fIsVIP	 = TRUE;
+	m_fNotKilled = FALSE;
+	m_iTeam		 = TEAM_CT;
+
+	g_pGameRules->m_pVIP = this;
+	g_pGameRules->m_iConsecutiveVIP = 1;
+}
+
 BOOL CBasePlayer::NeedsArmor( void )
 {
 	if( m_iKevlar )
