@@ -355,9 +355,7 @@ public:
 	virtual int		ObjectCaps( void ) { return CBaseMonster :: ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
 	virtual void	Precache( void );
 	BOOL			IsOnLadder( void );
-	BOOL			FlashlightIsOn( void );
-	void			FlashlightTurnOn( void );
-	void			FlashlightTurnOff( void );
+
 	
 	void UpdatePlayerSound ( void );
 
@@ -393,6 +391,9 @@ public:
 	void DropPlayerItem ( char *pszItemName );
 	void DropShield( bool bDeployActiveItem );
 	virtual void Duck( void );
+	BOOL FlashlightIsOn( void );
+	void FlashlightTurnOn( void );
+	void FlashlightTurnOff( void );
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );

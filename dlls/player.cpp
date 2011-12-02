@@ -1029,6 +1029,47 @@ void CBasePlayer::Duck( void )
 	}
 }
 
+void CBasePlayer::FlashlightTurnOn( void )
+{
+	if( !g_pGameRules->FAllowFlashlight() )
+	{
+		return;
+	}
+
+	if( FBitSet( pev->weapons, 1 << WEAPON_SUIT ) )
+	{
+		EMIT_SOUND( ENT( pev ), CHAN_ITEM, SOUND_FLASHLIGHT_ON, VOL_NORM, ATTN_NORM );
+
+		SetBits( pev->effects, EF_DIMLIGHT );
+
+		MESSAGE_BEGIN( MSG_ONE, gmsgFlashlight, NULL, ENT( pev ) );
+			WRITE_BYTE( 1 );
+			WRITE_BYTE( m_iFlashBattery );
+		MESSAGE_END();
+
+		m_flFlashLightTime = gpGlobals->time + FLASH_DRAIN_TIME;
+	}
+}
+
+void CBasePlayer::FlashlightTurnOff( void )
+{
+	EMIT_SOUND( ENT( pev ), CHAN_WEAPON, SOUND_FLASHLIGHT_OFF, VOL_NORM, ATTN_NORM );
+
+	ClearBits( pev->effects, EF_DIMLIGHT );
+
+	MESSAGE_BEGIN( MSG_ONE, gmsgFlashlight, NULL, ENT( pev ) );
+		WRITE_BYTE( 0 );
+		WRITE_BYTE( m_iFlashBattery );
+	MESSAGE_END();
+
+	m_flFlashLightTime = gpGlobals->time + FLASH_CHARGE_TIME;
+}
+
+BOOL CBasePlayer::FlashlightIsOn( void )
+{
+	return FBitSet( pev->effects, EF_DIMLIGHT );
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );
@@ -4248,48 +4289,6 @@ CBaseEntity *FindEntityForward( CBaseEntity *pMe )
 		return pHit;
 	}
 	return NULL;
-}
-
-
-BOOL CBasePlayer :: FlashlightIsOn( void )
-{
-	return FBitSet(pev->effects, EF_DIMLIGHT);
-}
-
-
-void CBasePlayer :: FlashlightTurnOn( void )
-{
-	if ( !g_pGameRules->FAllowFlashlight() )
-	{
-		return;
-	}
-
-	if ( (pev->weapons & (1<<WEAPON_SUIT)) )
-	{
-		EMIT_SOUND_DYN( ENT(pev), CHAN_WEAPON, SOUND_FLASHLIGHT_ON, 1.0, ATTN_NORM, 0, PITCH_NORM );
-		SetBits(pev->effects, EF_DIMLIGHT);
-		MESSAGE_BEGIN( MSG_ONE, gmsgFlashlight, NULL, pev );
-		WRITE_BYTE(1);
-		WRITE_BYTE(m_iFlashBattery);
-		MESSAGE_END();
-
-		m_flFlashLightTime = FLASH_DRAIN_TIME + gpGlobals->time;
-
-	}
-}
-
-
-void CBasePlayer :: FlashlightTurnOff( void )
-{
-	EMIT_SOUND_DYN( ENT(pev), CHAN_WEAPON, SOUND_FLASHLIGHT_OFF, 1.0, ATTN_NORM, 0, PITCH_NORM );
-    ClearBits(pev->effects, EF_DIMLIGHT);
-	MESSAGE_BEGIN( MSG_ONE, gmsgFlashlight, NULL, pev );
-	WRITE_BYTE(0);
-	WRITE_BYTE(m_iFlashBattery);
-	MESSAGE_END();
-
-	m_flFlashLightTime = FLASH_CHARGE_TIME + gpGlobals->time;
-
 }
 
 /*
