@@ -291,6 +291,7 @@ public:
 	char m_szTeamName[TEAM_NAME_LENGTH];
 
 	// CSSDK
+	int		m_fUserPrefs;				// 510/515 - 	
 
 	// Flashbang
 	float	m_flFlashedUntil;			// 514/519 - 
@@ -382,6 +383,7 @@ public:
 	void DeathSound( void );
 	void Disappear( void );
 	void DropPlayerItem ( char *pszItemName );
+	void DropShield( bool bDeployActiveItem );
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );

@@ -748,7 +748,7 @@ void CBasePlayer::DropPlayerItem ( char *pszItemName )
 
 	if( !pszItemName && HasShield() )
 	{	
-		//DropShield( TRUE );
+		DropShield( TRUE );
 		return;
 	}
 
@@ -900,6 +900,78 @@ void CBasePlayer::DropPlayerItem ( char *pszItemName )
 		{
 			SET_MODEL( ENT( pev ), model );
 		}*/
+	}
+}
+
+void CBasePlayer::DropShield( bool bDeployActiveItem )
+{
+	if( !HasShield() )
+	{
+		return;
+	}
+
+	CBasePlayerWeapon* pActiveItem = (CBasePlayerWeapon *)m_pActiveItem;
+
+	if( !pActiveItem /*|| pActiveItem->CanDrop() */ )
+	{
+		if( pActiveItem )
+		{
+			if( pActiveItem->m_iId == WEAPON_HEGRENADE || pActiveItem->m_iId == WEAPON_FLASHBANG || pActiveItem->m_iId == WEAPON_SMOKEGRENADE )
+			{
+				if( m_rgAmmo[ pActiveItem->m_iPrimaryAmmoType ] <= 0 )
+				{
+					g_pGameRules->FShouldSwitchWeapon( this, pActiveItem );
+				}
+			}
+
+			if( m_flStartThrow )
+			{
+				pActiveItem->Holster();
+			}
+
+			if( pActiveItem->m_fInReload )
+			{
+				pActiveItem->m_fInReload = FALSE;
+				m_flNextAttack = UTIL_WeaponTimeBase();
+			}
+		}
+
+		if( IsProtectedByShield() && pActiveItem )
+		{
+			pActiveItem->SecondaryAttack();
+		}
+
+		ClearBits( m_fUserPrefs, USERPREFS_SHIELD_DRAWN );
+
+		if( HasShield() )
+		{
+			ClearBits( m_fUserPrefs, USERPREFS_HAS_SHIELD );
+			ClearBits( m_fUserPrefs, USERPREFS_SHIELD_DRAWN );
+
+			m_fHasPrimaryWeapon = FALSE;
+			pev->gamestate = 1;
+
+			UpdateShieldCrosshair( true );
+		}
+
+		if( pActiveItem && bDeployActiveItem )
+		{
+			pActiveItem->Deploy();
+		}
+
+		UTIL_MakeVectors( pev->angles );
+
+		CBaseEntity *pShield = CBaseEntity::Create( "weapon_shield", pev->origin + gpGlobals->v_forward * 10, pev->angles, edict() );
+
+		pShield->pev->angles.x = 0;
+		pShield->pev->angles.z = 0;
+		pShield->pev->velocity = gpGlobals->v_forward * 400;
+
+		SetThink( &CBaseEntity::SUB_Remove );
+		pShield->pev->nextthink = gpGlobals->time + 300.0;
+
+		// pShield->m_hLastOwner = this;
+		// pShield->m_flNextPickupTime = gpGlobals->time + 2.0;
 	}
 }
 
