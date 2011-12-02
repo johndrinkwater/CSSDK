@@ -35,7 +35,7 @@ public:
 
 	static CGrenade* ShootTimed( entvars_t *pevOwner, Vector vecStart, Vector vecVelocity, float time );
 	static CGrenade* ShootTimed2( entvars_t *pevOwner, Vector vecStart, Vector vecVelocity, float time, int team, unsigned short usEvent );
-	static CGrenade* ShootSmokeGrenade( entvars_t *pevOwner, Vector vecStart, Vector vecVelocity, float time, int team, unsigned short usEvent );
+	static CGrenade* ShootSmokeGrenade( entvars_t *pevOwner, Vector vecStart, Vector vecVelocity, float time, unsigned short usEvent );
 	static CGrenade* ShootContact( entvars_t *pevOwner, Vector vecStart, Vector vecVelocity );
 	static CGrenade* ShootSatchelCharge( entvars_t *pevOwner, Vector vecStart, Vector vecVelocity );
 

@@ -152,8 +152,8 @@ void CXM1014::PrimaryAttack()
 
     m_pPlayer->FireBullets( 6, m_pPlayer->GetGunPosition(), gpGlobals->v_forward, VECTOR_CONE_XM1014, 3048.0, 4, 0, 0, 0 );
 
-    PLAYBACK_EVENT_FULL( FEV_NOTHOST, m_pPlayer->edict(), m_usXM1014, 0.0,
-        (float *)&g_vecZero, (float *)&g_vecZero, m_flUnknow1, m_flUnknow2, 7, m_flUnknow1 * 100, m_iClip ? 0 : 1, 0 ); // !!
+    //PLAYBACK_EVENT_FULL( FEV_NOTHOST, m_pPlayer->edict(), m_usXM1014, 0.0,
+    //    (float *)&g_vecZero, (float *)&g_vecZero, m_flUnknow1, m_flUnknow2, 7, m_flUnknow1 * 100, m_iClip ? 0 : 1, 0 ); // !!
 
     if( !m_iClip && m_pPlayer->m_rgAmmo[ m_iPrimaryAmmoType ] <= 0 )
     {
