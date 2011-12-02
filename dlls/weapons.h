@@ -475,6 +475,10 @@ public:
 	virtual void Holster( int skiplocal = 0 );
 	virtual BOOL UseDecrement( void ) { return FALSE; };
 	
+	void SetPlayerShieldAnim( void );
+	void ResetPlayerShieldAnim( void );
+	BOOL ShieldSecondaryFire( int animUp, int animDown );
+
 	int	PrimaryAmmoIndex(); 
 	int	SecondaryAmmoIndex(); 
 

@@ -1266,6 +1266,57 @@ void CBasePlayerWeapon::KickBack( float up_base, float lateral_base, float up_mo
 	m_pPlayer->pev->punchangle = angles;
 }
 
+void CBasePlayerWeapon::SetPlayerShieldAnim( void )
+{
+	if( m_pPlayer->HasShield() )
+	{
+		if( FBitSet( m_fWeaponState, WEAPONSTATE_SHIELD_DRAWN ) )
+			strcpy( m_pPlayer->m_szAnimExtention, "shield" );
+		else
+			strcpy( m_pPlayer->m_szAnimExtention, "shieldgun" );
+	}
+}
+
+void CBasePlayerWeapon::ResetPlayerShieldAnim( void )
+{
+	if( m_pPlayer->HasShield() && FBitSet( m_fWeaponState, WEAPONSTATE_SHIELD_DRAWN ) )
+	{
+		strcpy( m_pPlayer->m_szAnimExtention, "shieldgun" );
+	}
+}
+
+BOOL CBasePlayerWeapon::ShieldSecondaryFire( int animUp, int animDown )
+{
+	BOOL result;
+
+	if( m_pPlayer->HasShield() )
+	{
+		if( FBitSet( m_fWeaponState, WEAPONSTATE_SHIELD_DRAWN ) )
+		{
+			ClearBits( m_fWeaponState, WEAPONSTATE_SHIELD_DRAWN );
+			ClearBits( m_pPlayer->m_fUserPrefs, USERPREFS_SHIELD_DRAWN );
+
+			SendWeaponAnim( animDown, UseDecrement() );
+			strcpy( m_pPlayer->m_szAnimExtention, "shieldgun" );
+
+			m_flWeaponSpeed = 250.0;
+			result = FALSE;
+		}
+		else
+		{
+			SetBits( m_fWeaponState, WEAPONSTATE_SHIELD_DRAWN );
+			SetBits( m_pPlayer->m_fUserPrefs, USERPREFS_SHIELD_DRAWN );
+
+			SendWeaponAnim( animUp, UseDecrement() );
+			strcpy( m_pPlayer->m_szAnimExtention, "shielded" );
+
+			m_flWeaponSpeed = 180.0;
+			result = TRUE;
+		}
+	}
+
+	return result;
+}
 
 //*********************************************************
 // weaponbox code:
