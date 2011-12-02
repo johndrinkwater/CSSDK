@@ -257,7 +257,7 @@ public:
 	BOOL				m_fWeapon;				// Set this to FALSE to force a reset of the current weapon HUD info
 
 	EHANDLE				m_pTank;				// the tank which the player is currently controlling,  NULL if no tank
-	float				m_fDeadTime;			// the time at which the player died  (used in PlayerDeathThink())
+	float				m_flDeadTime;								// 354/359 - the time at which the player died  (used in PlayerDeathThink())
 
 	BOOL				m_fNoPlayerSound;	// a debugging feature. Player makes no sound if this is TRUE. 
 	BOOL				m_fLongJump; // does this player have the longjump module?
@@ -402,6 +402,12 @@ public:
 	BOOL NeedsGrenade( void );
 	BOOL NeedsPrimaryAmmo( void );
 	BOOL NeedsSecondaryAmmo( void );
+	void Observer_CheckProperties( void );
+	void Observer_CheckTarget( void );
+	void Observer_FindNextPlayer( bool bReverse, const char* szName );
+	void Observer_HandleButtons( void );
+	CBaseEntity* Observer_IsValidTarget( int index, bool checkTeam );
+	void Observer_SetMode( int mode );
 	void Radio( const char* szAudioCode, const char* szDisplayCode, short pitch, bool displayIcon );
 	void SetBombIcon( int status );
 	void SetProgressBarTime( int time );
@@ -475,6 +481,10 @@ public:
 
 	// CSSDK
 	int		m_iUserPrefs;				// 510/515 - 	
+
+	// Observer
+	BOOL	m_fObserverHasTarget;		// 511/516 - 1<<0
+	float	m_flFindNextPlayerTime;		// 512/517 -
 
 	char	m_szAutoBuyData[ 256 ];		// 520/525 -
 

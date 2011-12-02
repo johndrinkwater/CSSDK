@@ -1159,6 +1159,402 @@ BOOL CBasePlayer::NeedsSecondaryAmmo( void )
 	return pWeapon && m_rgAmmo[ pWeapon->m_iPrimaryAmmoType ] < pWeapon->iMaxAmmo1();
 }
 
+void CBasePlayer::Observer_CheckProperties( void )
+{
+	if( pev->iuser4 = OBS_IN_EYE && m_hObserverTarget )
+	{
+		CBasePlayer* pTarget = (CBasePlayer * )UTIL_PlayerByIndex( m_hObserverTarget->entindex() );
+
+		if( pTarget )
+		{
+			if( m_iFOV != pTarget->m_iFOV || m_iSpectatedPlayerWeaponId != pTarget->m_iSpectatedPlayerWeaponId )
+			{
+				m_iFOV = m_iClientFOV = pTarget->m_iFOV;
+
+				MESSAGE_BEGIN( MSG_ONE, gmsgSetFOV, NULL, ENT( pev ) );
+					WRITE_BYTE( m_iFOV );
+				MESSAGE_END();
+
+				m_iSpectatedPlayerWeaponId = pTarget->m_iSpectatedPlayerWeaponId;
+
+				MESSAGE_BEGIN( MSG_ONE, gmsgCurWeapon, NULL, ENT( pev ) ); 
+					WRITE_BYTE( 1 );
+					WRITE_BYTE( m_iSpectatedPlayerWeaponId );
+					WRITE_BYTE( 0 );
+				MESSAGE_END();
+			}
+
+			int targetBombStatus;
+			int targetHasDefuseKit;
+
+			if( pTarget->m_fCanPlantBomb )
+			{
+				targetBombStatus = 1;
+
+				if( FBitSet( m_fClientMapZone, MAPZONE_BOMBTARGET )  )
+				{
+					targetBombStatus = 2;
+				}
+			}
+
+			if( m_iSpectatedPlayerHasBomb != targetBombStatus )
+			{
+				m_iSpectatedPlayerHasBomb = targetBombStatus;
+
+				MESSAGE_BEGIN( MSG_ONE, gmsgStatusIcon, NULL, ENT( pev ) ); 
+				if( targetBombStatus )
+				{
+					WRITE_BYTE( targetBombStatus );
+					WRITE_STRING( "c4" );
+					WRITE_BYTE( 0 );
+					WRITE_BYTE( 160 );
+					WRITE_BYTE( 0 );
+				}
+				else
+				{
+					WRITE_BYTE( 0 );
+					WRITE_STRING( "c4" );
+				}
+				MESSAGE_END();
+			}
+
+			targetHasDefuseKit = pTarget->m_fHasDefuseKit;
+
+			if( m_iSpectatedPlayerHasDefuser != targetHasDefuseKit )
+			{
+				m_iSpectatedPlayerHasDefuser = targetHasDefuseKit;
+
+				MESSAGE_BEGIN( MSG_ONE, gmsgStatusIcon, NULL, ENT( pev ) ); 
+				if( targetHasDefuseKit )
+				{
+					WRITE_BYTE( 1 );
+					WRITE_STRING( "defuse" );
+					WRITE_BYTE( 0 );
+					WRITE_BYTE( 160 );
+					WRITE_BYTE( 0 );
+				}
+				else
+				{
+					WRITE_BYTE( 0 );
+					WRITE_STRING( "defuser" );
+				}
+				MESSAGE_END();
+			}
+		}
+	}
+	else
+	{
+		m_iFOV = 90;
+
+		if( m_iSpectatedPlayerWeaponId )
+		{
+			m_iSpectatedPlayerWeaponId = 0;
+
+			MESSAGE_BEGIN( MSG_ONE, gmsgCurWeapon, NULL, ENT( pev ) );
+			WRITE_BYTE( 1 );
+			WRITE_BYTE( m_iSpectatedPlayerWeaponId );
+			WRITE_BYTE( 0 );
+			MESSAGE_END();
+		}
+
+		if( m_iSpectatedPlayerHasBomb )
+		{
+			m_iSpectatedPlayerHasBomb = 0;
+
+			MESSAGE_BEGIN( MSG_ONE, gmsgStatusIcon, NULL, ENT( pev ) );
+				WRITE_BYTE( 0 );
+				WRITE_STRING( "c4" );
+			MESSAGE_END();
+		}
+
+		if( m_iSpectatedPlayerHasDefuser )
+		{
+			m_iSpectatedPlayerHasDefuser = 0;
+
+			MESSAGE_BEGIN( MSG_ONE, gmsgStatusIcon, NULL, ENT( pev ) );
+				WRITE_BYTE( 0 );
+				WRITE_STRING( "defuser" );
+			MESSAGE_END();
+		}
+	}
+}
+
+void CBasePlayer::Observer_CheckTarget( void )
+{
+	if( pev->iuser1 != OBS_ROAMING || m_fObserverHasTarget )
+	{
+		if( m_fObserverHasTarget )
+		{
+			Observer_FindNextPlayer( FALSE, NULL );
+
+			if( m_hObserverTarget )
+			{
+				Observer_SetMode( m_iSpecView );
+			}
+		}
+		else if( !m_hObserverTarget )
+		{
+			Observer_FindNextPlayer( FALSE, NULL );
+
+			if( m_hObserverTarget )
+			{
+				CBasePlayer* pTarget = (CBasePlayer *)UTIL_PlayerByIndex( m_hObserverTarget->entindex() );
+
+				if( pTarget && pTarget->pev->deadflag != DEAD_RESPAWNABLE && pTarget->pev->effects >= 0 )
+				{
+					if( pTarget->pev->deadflag == DEAD_DEAD && m_flDeadTime + 2.0 < gpGlobals->time )
+					{
+						Observer_FindNextPlayer( FALSE, NULL );
+
+						if( !m_hObserverTarget )
+						{
+							Observer_SetMode( OBS_ROAMING );
+
+							m_iSpecView = pev->iuser1;
+							m_fObserverHasTarget = TRUE;
+						}
+					}
+				}
+				else
+				{
+					Observer_FindNextPlayer( FALSE, NULL );
+				}
+			}
+			else
+			{
+				Observer_SetMode( OBS_ROAMING );
+				m_iSpecView = pev->iuser1;
+			}
+		}
+	}
+}
+
+void CBasePlayer::Observer_FindNextPlayer( bool bReverse, const char* szName )
+{
+	if( !m_flFindNextPlayerTime || m_flFindNextPlayerTime <= gpGlobals->time )
+	{
+		m_flFindNextPlayerTime = gpGlobals->time + 0.25;
+
+		int startIndex;
+
+		if( m_hObserverTarget )
+			startIndex = m_hObserverTarget->entindex();
+		else
+			startIndex = this->entindex();
+
+		m_hObserverTarget = NULL;
+
+		int	currentIndex = startIndex;
+		int direction = bReverse ? -1 : 1; 
+
+		bool checkTeam = false;
+
+		if( !fadetoblack.value && !CVAR_GET_FLOAT( "mp_forcechasecam" ) && !CVAR_GET_FLOAT( "mp_forcecamera" ) )
+		{
+			if( m_iTeam != TEAM_SPECTATOR )
+			{
+				checkTeam = true;
+			}
+		}
+
+		do
+		{
+			currentIndex += direction;
+
+			if( currentIndex > gpGlobals->maxClients )
+			{
+				currentIndex = 1;
+			}
+			else if( currentIndex < 1)
+			{
+				currentIndex = gpGlobals->maxClients;
+			}
+
+			m_hObserverTarget = Observer_IsValidTarget( currentIndex, checkTeam );
+
+			if( m_hObserverTarget )
+			{
+				if( !szName || !strcmp( szName, STRING( UTIL_PlayerByIndex( m_hObserverTarget->entindex() )->pev->netname ) ) )
+				{
+					break;
+				}
+			}
+		} 
+		while ( currentIndex != startIndex );
+
+		if( m_hObserverTarget )
+		{
+			UTIL_SetOrigin( this->pev, m_hObserverTarget->pev->origin );
+
+			int health = m_hObserverTarget->pev->health;
+
+			if( health < 0 )
+				health = 0;
+
+			MESSAGE_BEGIN( MSG_ONE, gmsgSpecHealth2, NULL, ENT( pev ) );
+				WRITE_BYTE( health );
+				WRITE_BYTE( m_hObserverTarget->entindex() );
+			MESSAGE_END();
+
+			if( pev->iuser1 != OBS_ROAMING )
+			{
+				pev->iuser2 = m_hObserverTarget->entindex();
+			}
+
+			//UpdateClientEffects( this, pev->iuser1 );
+		}
+	}
+}
+
+void CBasePlayer::Observer_HandleButtons( void )
+{
+	if( m_flNextObserverInput > gpGlobals->time )
+	{
+		return;
+	}
+
+	if( m_afButtonPressed & IN_JUMP )
+	{
+		int mode;
+
+		switch( pev->iuser1 )
+		{
+			case OBS_CHASE_LOCKED	:
+			case OBS_CHASE_FREE		: mode = OBS_IN_EYE;
+			case OBS_IN_EYE			: mode = OBS_ROAMING;
+			case OBS_ROAMING		: mode = OBS_MAP_FREE;
+			case OBS_MAP_FREE		: mode = OBS_MAP_CHASE;
+			default					: mode = m_fObserverAutoDirector ? OBS_CHASE_LOCKED : OBS_CHASE_FREE;
+		}
+
+		Observer_SetMode( mode );
+		m_flNextObserverInput = gpGlobals->time + 0.2;
+	}
+
+	if( m_afButtonPressed & IN_ATTACK )
+	{
+		Observer_FindNextPlayer( false, NULL );
+		m_flNextObserverInput = gpGlobals->time + 0.2;
+	}
+
+	if( m_afButtonPressed & IN_ATTACK2 )
+	{
+		Observer_FindNextPlayer( true, NULL );
+		m_flNextObserverInput = gpGlobals->time + 0.2;
+	}
+}
+
+CBaseEntity* CBasePlayer::Observer_IsValidTarget( int index, bool checkTeam )
+{
+	if( index > 0 && index <= gpGlobals->maxClients )
+	{
+		return NULL;
+	}
+
+	CBaseEntity *pEnt = UTIL_PlayerByIndex( index );
+
+	if ( !pEnt || pEnt == this )
+	{
+		return NULL;
+	}
+
+	if( /*((CBasePlayer* )pEnt)->IsObserver() ||*/ FBitSet( pEnt->pev->effects, EF_NODRAW ) )
+	{
+		return NULL;
+	}
+
+	if( checkTeam && ((CBasePlayer* )pEnt)->m_iTeam == m_iTeam )
+	{
+		return NULL;
+	}
+
+	return pEnt;
+}
+
+void CBasePlayer::Observer_SetMode( int mode )
+{
+	if( mode == pev->iuser1 )
+	{
+		return;
+	}
+
+	int newMode;
+
+	if( !fadetoblack.value )
+	{
+		if( !CVAR_GET_FLOAT( "mp_forcechasecam" ) )
+		{
+			newMode = CVAR_GET_FLOAT( "mp_forcechasecam" );
+		}
+	}
+	else
+	{
+		newMode = OBS_CHASE_FREE;
+	}
+
+	if( mode < OBS_CHASE_LOCKED || mode > OBS_MAP_CHASE )
+	{
+		newMode = OBS_IN_EYE;
+	}
+
+	int lastMode = pev->iuser1;
+
+	if( m_iTeam != TEAM_SPECTATOR )
+	{
+		switch( newMode )
+		{
+		case OBS_CHASE_LOCKED	:
+		case OBS_ROAMING		: newMode = OBS_MAP_FREE; break;
+		case OBS_CHASE_FREE		: newMode = OBS_IN_EYE; break;
+		}
+	}
+
+	if( m_hObserverTarget )
+	{
+		if( !Observer_IsValidTarget( m_hObserverTarget->entindex(), true ) )
+		{
+			m_hObserverTarget = NULL;
+		}
+	}
+
+	pev->iuser1 = newMode;
+
+	if( newMode != OBS_ROAMING && !m_hObserverTarget )
+	{ 
+		Observer_FindNextPlayer( FALSE, NULL );
+
+		if( !m_hObserverTarget )
+		{
+			ClientPrint( pev, HUD_PRINTCENTER, "#Spec_NoTarget" );
+			pev->iuser1 = OBS_ROAMING;
+		}
+	}
+
+	if( pev->iuser1 == OBS_ROAMING )
+		pev->iuser2 = 0;
+	else
+		pev->iuser2 = m_hObserverTarget->entindex();
+
+	if( m_hObserverTarget )
+	{
+		UTIL_SetOrigin( pev, m_hObserverTarget->pev->origin );
+	}
+
+	MESSAGE_BEGIN( MSG_ONE, gmsgCrosshair, NULL, ENT( pev ) );
+	WRITE_BYTE( newMode == OBS_ROAMING );
+	MESSAGE_END();
+
+	//UpdateClientEffects( this, lastMode );
+
+	char* message = NULL;
+	sprintf( message, "#Spec_Mode%i", pev->iuser1 );
+
+	ClientPrint( pev, HUD_PRINTCENTER, message );
+
+	m_iSpecView = newMode;
+	m_fObserverHasTarget = FALSE;
+}
+
 void CBasePlayer::Radio( const char* szAudioCode, const char* szDisplayCode, short pitch, bool displayIcon )
 {
 	if( IsPlayer() && ( pev->deadflag == DEAD_NO || IsBot() ) )
@@ -2403,7 +2799,7 @@ void CBasePlayer::PlayerDeathThink(void)
 
 		if ( g_pGameRules->FPlayerCanRespawn( this ) )
 		{
-			m_fDeadTime = gpGlobals->time;
+			m_flDeadTime = gpGlobals->time;
 			pev->deadflag = DEAD_RESPAWNABLE;
 		}
 		
@@ -2413,7 +2809,7 @@ void CBasePlayer::PlayerDeathThink(void)
 // if the player has been dead for one second longer than allowed by forcerespawn, 
 // forcerespawn isn't on. Send the player off to an intermission camera until they 
 // choose to respawn.
-	if ( g_pGameRules->IsMultiplayer() && ( gpGlobals->time > (m_fDeadTime + 6) ) && !(m_afPhysicsFlags & PFLAG_OBSERVER) )
+	if ( g_pGameRules->IsMultiplayer() && ( gpGlobals->time > (m_flDeadTime + 6) ) && !(m_afPhysicsFlags & PFLAG_OBSERVER) )
 	{
 		// go to dead camera. 
 		StartDeathCam();
@@ -2421,7 +2817,7 @@ void CBasePlayer::PlayerDeathThink(void)
 	
 // wait for any button down,  or mp_forcerespawn is set and the respawn time is up
 	if (!fAnyButtonDown 
-		&& !( g_pGameRules->IsMultiplayer() && forcerespawn.value > 0 && (gpGlobals->time > (m_fDeadTime + 5))) )
+		&& !( g_pGameRules->IsMultiplayer() && forcerespawn.value > 0 && (gpGlobals->time > (m_flDeadTime + 5))) )
 		return;
 
 	pev->button = 0;

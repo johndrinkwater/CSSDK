@@ -37,6 +37,9 @@ extern cvar_t	teamoverride;
 extern cvar_t	defaultteam;
 extern cvar_t	allowmonsters;
 
+// CSSDK
+extern cvar_t	fadetoblack;
+
 // Engine Cvars
 extern cvar_t	*g_psv_gravity;
 extern cvar_t	*g_psv_aim;
