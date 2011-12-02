@@ -1103,6 +1103,62 @@ BOOL CBasePlayer::IsHittingShield( Vector const &vecDir, TraceResult* ptr )
 	return false;
 }
 
+BOOL CBasePlayer::NeedsArmor( void )
+{
+	if( m_iKevlar )
+	{
+		return pev->armorvalue < 50;
+	}
+
+	return TRUE;
+}
+
+BOOL CBasePlayer::NeedsDefuseKit( void )
+{
+	if( m_fHasDefuseKit || m_iTeam != TEAM_CT )
+	{
+		return FALSE;
+	}
+
+	return g_pGameRules->m_bMapHasBombTarget;
+}
+
+BOOL CBasePlayer::NeedsGrenade( void )
+{
+	int ammoIndex;
+
+	if( ( ammoIndex = GetAmmoIndex( "HEGrenade" ) ) > -1 && m_rgAmmo[ ammoIndex ] )
+	{
+		return FALSE;
+	}
+
+	if( ( ammoIndex = GetAmmoIndex( "Flashbang" ) ) > -1 && m_rgAmmo[ ammoIndex ] )
+	{
+		return FALSE;
+	}
+
+	if( ( ammoIndex = GetAmmoIndex( "SmokeGrenade" ) ) > -1 && m_rgAmmo[ ammoIndex ] )
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+BOOL CBasePlayer::NeedsPrimaryAmmo( void )
+{
+	CBasePlayerWeapon* pWeapon = (CBasePlayerWeapon * )m_rgpPlayerItems[ WEAPON_SLOT_RIFLE ];
+
+	return pWeapon && pWeapon->m_iId != WEAPON_SHIELD && m_rgAmmo[ pWeapon->m_iPrimaryAmmoType ] < pWeapon->iMaxAmmo1();
+}
+
+BOOL CBasePlayer::NeedsSecondaryAmmo( void )
+{
+	CBasePlayerWeapon* pWeapon = (CBasePlayerWeapon * )m_rgpPlayerItems[ WEAPON_SLOT_PISTOL ];
+
+	return pWeapon && m_rgAmmo[ pWeapon->m_iPrimaryAmmoType ] < pWeapon->iMaxAmmo1();
+}
+
 void CBasePlayer::Radio( const char* szAudioCode, const char* szDisplayCode, short pitch, bool displayIcon )
 {
 	if( IsPlayer() && ( pev->deadflag == DEAD_NO || IsBot() ) )

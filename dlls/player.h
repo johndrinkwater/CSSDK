@@ -397,6 +397,11 @@ public:
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
+	BOOL NeedsArmor( void );
+	BOOL NeedsDefuseKit( void );
+	BOOL NeedsGrenade( void );
+	BOOL NeedsPrimaryAmmo( void );
+	BOOL NeedsSecondaryAmmo( void );
 	void Radio( const char* szAudioCode, const char* szDisplayCode, short pitch, bool displayIcon );
 	void SetBombIcon( int status );
 	void SetProgressBarTime( int time );
