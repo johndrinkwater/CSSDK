@@ -171,6 +171,8 @@ public:
 	BOOL			m_fFreezePeriod;			//   4/0   -
 	BOOL			m_fBombDropped;				//   8/4   -
 
+	float			m_flTeamCount;				//	48/40  - 
+
 	float			m_flRoundCount;				//  56/48  - 
 	int				m_iRoundTime;				//  60/52  - 
 	int				m_iRoundTimeSecs;			//  64/56  -

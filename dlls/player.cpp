@@ -726,6 +726,183 @@ void CBasePlayer::Disappear( void )
 	pev->angles.z = 0;
 }
 
+//=========================================================
+// DropPlayerItem - drop the named item, or if no name,
+// the active item. 
+//=========================================================
+void CBasePlayer::DropPlayerItem ( char *pszItemName )
+{
+	if( !strlen( pszItemName ) )
+	{
+		// if this string has no length, the client didn't type a name!
+		// assume player wants to drop the active item.
+		// make the string null to make future operations in this function easier
+		pszItemName = NULL;
+	} 
+
+	if( m_fIsVIP )
+	{
+		ClientPrint( this->pev, HUD_PRINTCENTER, "#Weapon_Cannot_Be_Dropped" );
+		return;
+	}
+
+	if( !pszItemName && HasShield() )
+	{	
+		//DropShield( TRUE );
+		return;
+	}
+
+	CBasePlayerItem *pWeapon;
+	int i;
+
+	for( i = 0 ; i < MAX_ITEM_TYPES ; i++ )
+	{
+		pWeapon = m_rgpPlayerItems[ i ];
+
+		while( pWeapon )
+		{
+			if( pszItemName )
+			{
+				if( !strcmp( pszItemName, STRING( pWeapon->pev->classname ) ) )
+				{
+					break;
+				}
+			}
+			else if( pWeapon == m_pActiveItem )
+			{
+				break;
+			}
+
+			pWeapon = pWeapon->m_pNext; 
+		}
+	}
+
+	// if we land here with a valid pWeapon pointer, that's because we found the 
+	// item we want to drop and hit a BREAK;  pWeapon is the item.
+	if( pWeapon )
+	{
+		/*if( !pWeapon->CanDrop() )
+		{
+			ClientPrint( this->pev, HUD_PRINTCENTER, "#Weapon_Cannot_Be_Dropped" );
+			return;
+		}*/
+
+		UTIL_MakeVectors ( pev->angles ); 
+		pev->weapons &= ~( 1 << pWeapon->m_iId ); // take item off hud
+
+		g_pGameRules->GetNextBestWeapon( this, pWeapon );
+
+		if( pWeapon->iItemSlot() == ITEMSLOT_PRIMARY )
+		{
+			m_fHasPrimaryWeapon = FALSE;
+		}
+
+		if( !strcmp( STRING( pWeapon->pev->classname ), "weapon_c4" ) )
+		{
+			m_fCanPlantBomb = FALSE;
+			pev->body = 0;
+
+			MESSAGE_BEGIN( MSG_ONE, gmsgStatusIcon, NULL, ENT( pev ) );
+			if( m_fCanPlantBomb )
+			{
+				WRITE_BYTE( 1 );
+				WRITE_STRING( "c4" );
+				WRITE_BYTE( 0 );
+				WRITE_BYTE( 160 );
+				WRITE_BYTE( 0 );
+			}
+			else
+			{
+				WRITE_BYTE( 0 );
+				WRITE_STRING( "c4" );
+			}
+			MESSAGE_END();
+
+			for( int i = 1; i <= gpGlobals->maxClients; ++i )
+			{
+				CBasePlayer* pPlayer = (CBasePlayer *)UTIL_PlayerByIndex( i );
+
+				if( pPlayer && pPlayer->edict() )
+				{
+					pPlayer->SetScoreboardAttributes( this );
+				}
+			}
+
+			SetBombIcon( 0 );
+			pWeapon->m_pPlayer->SetProgressBarTime( 0 );
+
+			if( !g_pGameRules->m_flTeamCount )
+			{
+				UTIL_LogPrintf( "\"%s<%i><%s><TERRORIST>\" triggered \"Dropped_The_Bomb\"\n",
+									STRING( pWeapon->pev->netname ),
+									GETPLAYERUSERID( this->edict() ),
+									GETPLAYERAUTHID( this->edict() ) );
+
+				g_pGameRules->m_fBombDropped = true;
+
+				CBaseEntity* pEntity = NULL;
+				CBasePlayer* pPlayer = NULL;
+
+				while( ( pEntity = UTIL_FindEntityByClassname( pEntity, "player" ) ) )
+				{
+					if( !FNullEnt( pEntity->edict() ) && pEntity->IsPlayer() && !pEntity->IsDormant() )
+					{
+						pPlayer = GetClassPtr( (CBasePlayer *)VARS( pEntity->pev ) );
+
+						if( pPlayer->pev->deadflag == DEAD_NO && pPlayer->m_iTeam == TEAM_TERRORIST )
+						{
+							ClientPrint( pPlayer->pev, HUD_PRINTCENTER, "#Game_bomb_drop", STRING( pPlayer->pev->netname ) );
+
+							MESSAGE_BEGIN( MSG_ONE, gmsgBombDrop, NULL, ENT( pPlayer->pev ) );
+								WRITE_COORD( pev->origin.x );
+								WRITE_COORD( pev->origin.y );
+								WRITE_COORD( pev->origin.z );
+								WRITE_BYTE( 0 );
+							MESSAGE_END();
+						}
+					}
+				}
+			}
+		}
+
+		CWeaponBox *pWeaponBox = (CWeaponBox *)CBaseEntity::Create( "weaponbox", pev->origin + gpGlobals->v_forward * 10, pev->angles, edict() );
+
+		pWeaponBox->pev->angles.x = 0;
+		pWeaponBox->pev->angles.z = 0;
+
+		SetThink( &CWeaponBox::Kill );
+		pWeaponBox->pev->nextthink = gpGlobals->time + 300.0;
+
+		pWeaponBox->PackWeapon( pWeapon );
+		pWeaponBox->pev->velocity = gpGlobals->v_forward * 400;
+
+		if( !strcmp( STRING( pWeapon->pev->classname ), "weapon_c4" ) )
+		{
+			/*! @todo Implements me :
+			TheBots->SetLooseBomb( pWeaponBox ); 
+			TheBots->OnEvent( EVENT_BOMB_DROPPED, NULL, NULL );	*/
+		}
+
+		int	iAmmoIndex;
+
+		iAmmoIndex = GetAmmoIndex( pWeapon->pszAmmo1() );
+
+		if( iAmmoIndex != -1 && pWeapon->iFlags() & ITEM_FLAG_EXHAUSTIBLE )
+		{
+			// pack up all the ammo, this weapon is its own ammo type
+			pWeaponBox->PackAmmo( MAKE_STRING( pWeapon->pszAmmo1() ), m_rgAmmo[ iAmmoIndex ] );
+			m_rgAmmo[ iAmmoIndex ] = 0; 
+		}
+
+		/*char* model = GetCSModelName( pWeapon->m_iId );
+
+		if( model )
+		{
+			SET_MODEL( ENT( pev ), model );
+		}*/
+	}
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );
@@ -5021,104 +5198,6 @@ GetCustomDecalFrames
 int CBasePlayer :: GetCustomDecalFrames( void )
 {
 	return m_nCustomSprayFrames;
-}
-
-
-//=========================================================
-// DropPlayerItem - drop the named item, or if no name,
-// the active item. 
-//=========================================================
-void CBasePlayer::DropPlayerItem ( char *pszItemName )
-{
-	if ( !g_pGameRules->IsMultiplayer() || (weaponstay.value > 0) )
-	{
-		// no dropping in single player.
-		return;
-	}
-
-	if ( !strlen( pszItemName ) )
-	{
-		// if this string has no length, the client didn't type a name!
-		// assume player wants to drop the active item.
-		// make the string null to make future operations in this function easier
-		pszItemName = NULL;
-	} 
-
-	CBasePlayerItem *pWeapon;
-	int i;
-
-	for ( i = 0 ; i < MAX_ITEM_TYPES ; i++ )
-	{
-		pWeapon = m_rgpPlayerItems[ i ];
-
-		while ( pWeapon )
-		{
-			if ( pszItemName )
-			{
-				// try to match by name. 
-				if ( !strcmp( pszItemName, STRING( pWeapon->pev->classname ) ) )
-				{
-					// match! 
-					break;
-				}
-			}
-			else
-			{
-				// trying to drop active item
-				if ( pWeapon == m_pActiveItem )
-				{
-					// active item!
-					break;
-				}
-			}
-
-			pWeapon = pWeapon->m_pNext; 
-		}
-
-		
-		// if we land here with a valid pWeapon pointer, that's because we found the 
-		// item we want to drop and hit a BREAK;  pWeapon is the item.
-		if ( pWeapon )
-		{
-			g_pGameRules->GetNextBestWeapon( this, pWeapon );
-
-			UTIL_MakeVectors ( pev->angles ); 
-
-			pev->weapons &= ~(1<<pWeapon->m_iId);// take item off hud
-
-			CWeaponBox *pWeaponBox = (CWeaponBox *)CBaseEntity::Create( "weaponbox", pev->origin + gpGlobals->v_forward * 10, pev->angles, edict() );
-			pWeaponBox->pev->angles.x = 0;
-			pWeaponBox->pev->angles.z = 0;
-			pWeaponBox->PackWeapon( pWeapon );
-			pWeaponBox->pev->velocity = gpGlobals->v_forward * 300 + gpGlobals->v_forward * 100;
-			
-			// drop half of the ammo for this weapon.
-			int	iAmmoIndex;
-
-			iAmmoIndex = GetAmmoIndex ( pWeapon->pszAmmo1() ); // ???
-			
-			if ( iAmmoIndex != -1 )
-			{
-				// this weapon weapon uses ammo, so pack an appropriate amount.
-				if ( pWeapon->iFlags() & ITEM_FLAG_EXHAUSTIBLE )
-				{
-					// pack up all the ammo, this weapon is its own ammo type
-					pWeaponBox->PackAmmo( MAKE_STRING(pWeapon->pszAmmo1()), m_rgAmmo[ iAmmoIndex ] );
-					m_rgAmmo[ iAmmoIndex ] = 0; 
-
-				}
-				else
-				{
-					// pack half of the ammo
-					pWeaponBox->PackAmmo( MAKE_STRING(pWeapon->pszAmmo1()), m_rgAmmo[ iAmmoIndex ] / 2 );
-					m_rgAmmo[ iAmmoIndex ] /= 2; 
-				}
-
-			}
-
-			return;// we're done, so stop searching with the FOR loop.
-		}
-	}
 }
 
 //=========================================================

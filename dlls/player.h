@@ -381,6 +381,7 @@ public:
 	void ClearAutoBuyData( void );
 	void DeathSound( void );
 	void Disappear( void );
+	void DropPlayerItem ( char *pszItemName );
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
@@ -392,7 +393,6 @@ public:
 	void AddPoints( int score, BOOL bAllowNegativeScore );
 	void AddPointsToTeam( int score, BOOL bAllowNegativeScore );
 	BOOL RemovePlayerItem( CBasePlayerItem *pItem );
-	void DropPlayerItem ( char *pszItemName );
 	BOOL HasPlayerItem( CBasePlayerItem *pCheckItem );
 	BOOL HasNamedPlayerItem( const char *pszItemName );
 	BOOL HasWeapons( void );// do I have ANY weapons?
