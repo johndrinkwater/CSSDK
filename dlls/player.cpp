@@ -326,6 +326,51 @@ void LinkUserMessages( void )
 LINK_ENTITY_TO_CLASS( player, CBasePlayer );
 
 
+char* GetCSModelName( int id )
+{
+	char* model = NULL;
+
+	switch( id )
+	{
+		case WEAPON_AK47		: model = "models/w_ak47.mdl"			; break;
+		case WEAPON_GALIL		: model = "models/w_galil.mdl"			; break;
+		case WEAPON_FAMAS		: model = "models/w_famas.mdl"			; break;
+		case WEAPON_AWP			: model = "models/w_awp.mdl"			; break;
+		case WEAPON_DEAGLE		: model = "models/w_deagle.mdl"			; break;
+		case WEAPON_G3SG1		: model = "models/w_g3sg1.mdl"			; break;
+		case WEAPON_SG550		: model = "models/w_sg550.mdl"			; break;
+		case WEAPON_GLOCK18		: model = "models/w_glock18.mdl"		; break;
+		case WEAPON_M249		: model = "models/w_m249.mdl"			; break;
+		case WEAPON_M3			: model = "models/w_m3.mdl"				; break;
+		case WEAPON_M4A1		: model = "models/w_m4a1.mdl"			; break;
+		case WEAPON_MP5NAVY		: model = "models/w_mp5.mdl"			; break;
+		case WEAPON_SG552		: model = "models/w_sg552.mdl"			; break;
+		case WEAPON_AUG			: model = "models/w_aug.mdl"			; break;
+		case WEAPON_TMP			: model = "models/w_tmp.mdl"			; break;
+		case WEAPON_USP			: model = "models/w_usp.mdl"			; break;
+		case WEAPON_ELITE		: model = "models/w_elite.mdl"			; break;
+		case WEAPON_FIVESEVEN	: model = "models/w_fiveseven.mdl"		; break;
+		case WEAPON_P90			: model = "models/w_p90.mdl"			; break;
+		case WEAPON_UMP45		: model = "models/w_ump45.mdl"			; break;
+		case WEAPON_MAC10		: model = "models/w_mac10.mdl"			; break;
+		case WEAPON_P228		: model = "models/w_p228.mdl"			; break;
+		case WEAPON_SCOUT		: model = "models/w_scout.mdl"			; break;
+		case WEAPON_KNIFE		: model = "models/w_knife.mdl"			; break;
+		case WEAPON_FLASHBANG	: model = "models/w_flashbang.mdl"		; break;
+		case WEAPON_HEGRENADE	: model = "models/w_hegrenade.mdl"		; break;
+		case WEAPON_SMOKEGRENADE: model = "models/w_smokegrenade.mdl"	; break;
+		case WEAPON_XM1014		: model = "models/w_xm1014.mdl"			; break;
+		case WEAPON_C4			: model = "models/w_backpack.mdl"		; break;
+		case WEAPON_SHIELD		: model = "models/w_shield.mdl"			; break;
+		default : 
+		{
+			ALERT( at_console, "CBasePlayer::PackDeadPlayerItems(): Unhandled item- not creating weaponbox\n"); 
+			break;
+		}
+	}
+
+	return model;
+}
 
 void CBasePlayer :: Pain( void )
 {
@@ -894,12 +939,12 @@ void CBasePlayer::DropPlayerItem ( char *pszItemName )
 			m_rgAmmo[ iAmmoIndex ] = 0; 
 		}
 
-		/*char* model = GetCSModelName( pWeapon->m_iId );
+		char* model = GetCSModelName( pWeapon->m_iId );
 
 		if( model )
 		{
 			SET_MODEL( ENT( pev ), model );
-		}*/
+		}
 	}
 }
 
