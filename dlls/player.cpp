@@ -645,6 +645,11 @@ void CBasePlayer::CheckPowerups( entvars_s*	pPlayer )
 	}
 }
 
+void CBasePlayer::ClearAutoBuyData( void )
+{
+	*m_szAutoBuyData = 0;
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );

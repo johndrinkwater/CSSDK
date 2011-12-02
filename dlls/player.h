@@ -356,6 +356,7 @@ public:
 	BOOL CanPlayerBuy( bool bDisplayMessage );
 	BOOL CanSwitchObserverModes( void );
 	void CheckPowerups( entvars_s* pPlayer );
+	void ClearAutoBuyData( void );
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
@@ -432,6 +433,9 @@ public:
 
 	// CSSDK
 	int		m_iUserPrefs;				// 510/515 - 	
+
+	char	m_szAutoBuyData[ 256 ];		// 520/525 -
+
 	float	m_flProgressBarStartTime;	// 605/610 -
 	float	m_flProgressBarEndTime;		// 606/611 -
 
