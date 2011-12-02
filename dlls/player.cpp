@@ -632,6 +632,100 @@ void CBasePlayer::DeathSound( void )
 	}
 }
 
+void CBasePlayer::Disappear( void )
+{
+	if( m_pTank != NULL )
+	{
+		m_pTank->Use( this, this, USE_OFF, 0 );
+		m_pTank = NULL;
+	}
+
+	CSound *pSound = CSoundEnt::SoundPointerForIndex( CSoundEnt::ClientSoundIndex( edict() ) );
+	{
+		if( pSound )
+		{
+			pSound->Reset();
+		}
+	}
+
+	m_fSequenceFinished = TRUE; //! @todo Not sure if it's really m_fSequenceFinished.
+	pev->modelindex		= g_ulModelIndexPlayer;
+
+	pev->view_ofs = Vector( 0, 0, -8 );
+	pev->deadflag = DEAD_DYING;
+	pev->solid	  = SOLID_NOT;
+
+	ClearBits( pev->flags, FL_ONGROUND ); //! @todo Not sure if there is only this flag removed.
+	SetSuitUpdate( NULL, FALSE, 0 );
+
+	m_iClientHealth = 0;
+
+	MESSAGE_BEGIN( MSG_ONE, gmsgHealth, NULL, ENT( pev ) );
+		WRITE_BYTE( m_iClientHealth );
+	MESSAGE_END();
+
+	MESSAGE_BEGIN( MSG_ONE, gmsgCurWeapon, NULL, ENT( pev ) );
+		WRITE_BYTE( 0 );
+		WRITE_BYTE( 0xFF );
+		WRITE_BYTE( 0xFF );
+	MESSAGE_END();
+
+	m_iClientFOV = m_iFOV = pev->fov = 0;
+
+	MESSAGE_BEGIN( MSG_ONE, gmsgSetFOV, NULL, ENT( pev ) );
+		WRITE_BYTE( 0 );
+	MESSAGE_END();
+
+	g_pGameRules->CheckWinConditions();
+
+	m_fNotKilled = FALSE;
+
+	if( m_fCanPlantBomb )
+	{
+		DropPlayerItem( "weapon_c4" );
+		SetProgressBarTime( 0 );
+	}
+	else if( m_fHasDefuseKit )
+	{
+		m_fHasDefuseKit = FALSE;
+		pev->body = 0;
+
+		GiveNamedItem( "item_thighpack" );
+
+		MESSAGE_BEGIN( MSG_ONE, gmsgStatusIcon, NULL, ENT( pev ) );
+			WRITE_BYTE( 0 );
+			WRITE_STRING( "defuser" );
+		MESSAGE_END();
+
+		MESSAGE_BEGIN( MSG_ONE, gmsgItemStatus, NULL, ENT( pev ) );
+			WRITE_BYTE( 2 * m_fHasDefuseKit | m_fDefusekitItem ); //! @todo Check more.
+		MESSAGE_END();
+
+		SetProgressBarTime( 0 );
+	}
+
+	MESSAGE_BEGIN( MSG_ONE, gmsgStatusIcon, NULL, ENT( pev ) );
+		WRITE_BYTE( 0 );
+		WRITE_STRING( "buyzone" );
+	MESSAGE_END();
+
+	if( m_iMenu >= MENUID_BUY && m_iMenu <= MENUID_BUY_ITEM )
+	{
+		CLIENT_COMMAND( ENT( pev ), "slot10\n");
+	}
+	else if( m_iMenu == MENUID_BUY_CLOSE )
+	{
+		MESSAGE_BEGIN( MSG_ONE, gmsgBuyClose, NULL, ENT( pev ) );
+		MESSAGE_END();
+	}
+
+	SetThink( &CBasePlayer::PlayerDeathThink );
+	pev->nextthink = gpGlobals->time + 0.1;
+
+	pev->angles.x = 0;
+	pev->angles.z = 0;
+}
+
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );

@@ -53,6 +53,24 @@
 #define TEAM_SPECTATOR   3
 
 //
+// m_iMenu
+//
+#define MENUID_BUY_OPEN           0 
+#define MENUID_CHANGE_TEAM        1
+#define MENUID_FIRST_TEAM         3
+#define MENUID_BUY                4
+#define MENUID_BUY_PISTOL         5    
+#define MENUID_BUY_RIFLE          6   
+#define MENUID_BUY_MACHINEGUN     7   
+#define MENUID_BUY_SHOTGUN        8  
+#define MENUID_BUY_SUBMACHINEGUN  9  
+#define MENUID_BUY_ITEM           10 
+#define MENUID_RADIO_A            11 
+#define MENUID_RADIO_B            12 
+#define MENUID_RADIO_C            13 
+#define MENUID_BUY_CLOSE          14 
+
+//
 // m_fMapZone, m_fClientMapZone
 //
 #define MAPZONE_BUY        ( 1 << 0 )
@@ -159,9 +177,14 @@ public:
 
 	BOOL				m_fHasPrimaryWeapon;						// 116/121 - 
 
+	BOOL				m_fDefusekitItem;							// 129/134 - 1<<0
+	BOOL				m_fNvgGoggleItem;							// 129/134 - 1<<8	
+
 	// Bomb
 	BOOL				m_fCanPlantBomb;							// 193/198 - (1<<8)
 	BOOL				m_fHasDefuseKit;							// 193/198 - (1<<16)
+
+	int					m_iMenu;									// 205/210 - See MENUID_* constants.
 
 	BOOL				m_fIsVIP;									// 209/214 - (1<<8)
 	BOOL				m_fBombDefusing;							// 232/237 - (1<<8)
@@ -357,6 +380,7 @@ public:
 	void CheckPowerups( entvars_s* pPlayer );
 	void ClearAutoBuyData( void );
 	void DeathSound( void );
+	void Disappear( void );
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
