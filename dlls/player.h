@@ -477,6 +477,7 @@ public:
 	void FlashlightTurnOn( void );
 	void FlashlightTurnOff( void );
 	BOOL HasShield( void );
+	BOOL IsObserver( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
 	void JoiningThink( void );

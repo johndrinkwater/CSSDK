@@ -492,6 +492,22 @@ Vector CBasePlayer :: GetGunPosition( )
 	return origin;
 }
 
+
+// CSSDK
+void CheckStartMoney( void )
+{
+	int money = (int)startmoney.value;
+
+	if( money < 800 )
+	{
+		CVAR_SET_FLOAT( "mp_startmoney", 800.0 );
+	}
+	else if( money > 16000 )
+	{
+		CVAR_SET_FLOAT( "mp_startmoney", 16000.0 );
+	}
+}
+
 // CSSDK
 void CBasePlayer::AddAccount( int amount, bool trackChange )
 {
@@ -512,11 +528,13 @@ void CBasePlayer::AddAccount( int amount, bool trackChange )
 	MESSAGE_END();
 }
 
+// CSSDK
 void CBasePlayer::AllowAutoFollow( void )
 {
 	m_flNextAutoFollowTime = 0;
 }
 
+// CSSDK
 void CBasePlayer::Blind( float flTime, float flHoldtime, float flDuration, int iAlpha )
 {
 	m_flFlashedUntil  = gpGlobals->time + flTime;
@@ -526,21 +544,25 @@ void CBasePlayer::Blind( float flTime, float flHoldtime, float flDuration, int i
 	m_iFlashAlpha     = iAlpha;
 }
 
+// CSSDK
 BOOL CBasePlayer::CanAffordArmor( void )
 {
 	return ( m_iKevlar != 1 || pev->armorvalue != 100 || m_iAccount < 350 ) ? m_iAccount >= 650 : TRUE;
 }
 
+// CSSDK
 BOOL CBasePlayer::CanAffordDefuseKit( void )
 {
 	return m_iAccount > 200;
 }
 
+// CSSDK
 BOOL CBasePlayer::CanAffordGrenade( void )
 {
 	return m_iAccount < 300 ? m_iAccount >= 200 : TRUE;
 }
 
+// CSSDK
 BOOL CBasePlayer::CanAffordPrimary( void )
 {
 	if( m_iTeam == TEAM_CT || m_iTeam == TEAM_TERRORIST )
@@ -561,6 +583,7 @@ BOOL CBasePlayer::CanAffordPrimary( void )
 	return FALSE;
 }
 
+// CSSDK
 BOOL CBasePlayer::CanAffordPrimaryAmmo( void )
 {
 	if( m_pLastPrimaryItem )
@@ -581,6 +604,7 @@ BOOL CBasePlayer::CanAffordPrimaryAmmo( void )
 	return FALSE;
 }
 
+// CSSDK
 BOOL CBasePlayer::CanAffordSecondaryAmmo( void )
 {
 	if( m_pLastSecondaryItem )
@@ -601,6 +625,7 @@ BOOL CBasePlayer::CanAffordSecondaryAmmo( void )
 	return FALSE;
 }
 
+// CSSDK
 BOOL CBasePlayer::CanPlayerBuy( bool bDisplayMessage )
 {
 	if( !g_pGameRules->IsMultiplayer() )
@@ -649,11 +674,13 @@ BOOL CBasePlayer::CanPlayerBuy( bool bDisplayMessage )
 	return TRUE;
 }
 
+// CSSDK
 BOOL CBasePlayer::CanSwitchObserverModes( void )
 {
 	return m_fObserverAutoDirector;
 }
 
+// CSSDK
 void CBasePlayer::CheckPowerups( entvars_s*	pPlayer )
 {
 	if( pPlayer->health )
@@ -662,11 +689,13 @@ void CBasePlayer::CheckPowerups( entvars_s*	pPlayer )
 	}
 }
 
+// CSSDK
 void CBasePlayer::ClearAutoBuyData( void )
 {
 	*m_szAutoBuyData = 0;
 }
 
+// CSSDK
 void CBasePlayer::DeathSound( void )
 {
 	switch( RANDOM_LONG( 0, 3 ) )
@@ -678,6 +707,7 @@ void CBasePlayer::DeathSound( void )
 	}
 }
 
+// CSSDK
 void CBasePlayer::Disappear( void )
 {
 	if( m_pTank != NULL )
@@ -772,6 +802,8 @@ void CBasePlayer::Disappear( void )
 	pev->angles.z = 0;
 }
 
+
+// CSSDK
 //=========================================================
 // DropPlayerItem - drop the named item, or if no name,
 // the active item. 
@@ -949,6 +981,7 @@ void CBasePlayer::DropPlayerItem ( char *pszItemName )
 	}
 }
 
+// CSSDK
 void CBasePlayer::DropShield( bool bDeployActiveItem )
 {
 	if( !HasShield() )
@@ -1021,6 +1054,7 @@ void CBasePlayer::DropShield( bool bDeployActiveItem )
 	}
 }
 
+// CSSDK
 void CBasePlayer::Duck( void )
 {
 	if( pev->button & IN_DUCK ) 
@@ -1029,6 +1063,7 @@ void CBasePlayer::Duck( void )
 	}
 }
 
+// CSSDK
 void CBasePlayer::FlashlightTurnOn( void )
 {
 	if( !g_pGameRules->FAllowFlashlight() )
@@ -1051,6 +1086,7 @@ void CBasePlayer::FlashlightTurnOn( void )
 	}
 }
 
+// CSSDK
 void CBasePlayer::FlashlightTurnOff( void )
 {
 	EMIT_SOUND( ENT( pev ), CHAN_WEAPON, SOUND_FLASHLIGHT_OFF, VOL_NORM, ATTN_NORM );
@@ -1065,21 +1101,31 @@ void CBasePlayer::FlashlightTurnOff( void )
 	m_flFlashLightTime = gpGlobals->time + FLASH_CHARGE_TIME;
 }
 
+// CSSDK
 BOOL CBasePlayer::FlashlightIsOn( void )
 {
 	return FBitSet( pev->effects, EF_DIMLIGHT );
 }
 
+// CSSDK
 BOOL CBasePlayer::HasShield( void )
 {
 	return FBitSet( m_iUserPrefs, USERPREFS_HAS_SHIELD );
 }
 
+// CSSDK
+BOOL CBasePlayer::IsObserver( void )
+{
+	return pev->iuser1;
+}
+
+// CSSDK
 BOOL CBasePlayer::IsProtectedByShield( void )
 {
 	return HasShield() && FBitSet( m_iUserPrefs, USERPREFS_SHIELD_DRAWN );
 }
 
+// CSSDK
 BOOL CBasePlayer::IsHittingShield( Vector const &vecDir, TraceResult* ptr )
 {
 	if( m_pActiveItem && m_pActiveItem->m_iId == WEAPON_C4 )
@@ -1103,6 +1149,7 @@ BOOL CBasePlayer::IsHittingShield( Vector const &vecDir, TraceResult* ptr )
 	return false;
 }
 
+// CSSDK
 void CBasePlayer::JoiningThink( void )
 {
 	switch( m_iJoiningState )
@@ -1173,7 +1220,7 @@ void CBasePlayer::JoiningThink( void )
 			{
 				m_iAccount = 0;
 
-				//CheckStartMoney();
+				CheckStartMoney();
 				AddAccount( (int)startmoney.value, true ); // Inline
 			}
 
@@ -1192,7 +1239,7 @@ void CBasePlayer::JoiningThink( void )
 
 				if( m_iTeam == TEAM_TERRORIST )
 				{
-					//g_pGameRules->m_iNumEscapers++;
+					g_pGameRules->m_iNumEscapers++;
 				}
 			}
 			else
@@ -1290,6 +1337,7 @@ void CBasePlayer::JoiningThink( void )
 	}
 }
 
+// CSSDK
 void CBasePlayer::MakeVIP( void )
 {
 	pev->body = 0;
@@ -1311,6 +1359,7 @@ void CBasePlayer::MakeVIP( void )
 	g_pGameRules->m_iConsecutiveVIP = 1;
 }
 
+// CSSDK
 BOOL CBasePlayer::NeedsArmor( void )
 {
 	if( m_iKevlar )
@@ -1321,6 +1370,7 @@ BOOL CBasePlayer::NeedsArmor( void )
 	return TRUE;
 }
 
+// CSSDK
 BOOL CBasePlayer::NeedsDefuseKit( void )
 {
 	if( m_fHasDefuseKit || m_iTeam != TEAM_CT )
@@ -1331,6 +1381,7 @@ BOOL CBasePlayer::NeedsDefuseKit( void )
 	return g_pGameRules->m_bMapHasBombTarget;
 }
 
+// CSSDK
 BOOL CBasePlayer::NeedsGrenade( void )
 {
 	int ammoIndex;
@@ -1353,6 +1404,7 @@ BOOL CBasePlayer::NeedsGrenade( void )
 	return TRUE;
 }
 
+// CSSDK
 BOOL CBasePlayer::NeedsPrimaryAmmo( void )
 {
 	CBasePlayerWeapon* pWeapon = (CBasePlayerWeapon * )m_rgpPlayerItems[ WEAPON_SLOT_RIFLE ];
@@ -1360,6 +1412,7 @@ BOOL CBasePlayer::NeedsPrimaryAmmo( void )
 	return pWeapon && pWeapon->m_iId != WEAPON_SHIELD && m_rgAmmo[ pWeapon->m_iPrimaryAmmoType ] < pWeapon->iMaxAmmo1();
 }
 
+// CSSDK
 BOOL CBasePlayer::NeedsSecondaryAmmo( void )
 {
 	CBasePlayerWeapon* pWeapon = (CBasePlayerWeapon * )m_rgpPlayerItems[ WEAPON_SLOT_PISTOL ];
@@ -1367,6 +1420,7 @@ BOOL CBasePlayer::NeedsSecondaryAmmo( void )
 	return pWeapon && m_rgAmmo[ pWeapon->m_iPrimaryAmmoType ] < pWeapon->iMaxAmmo1();
 }
 
+// CSSDK
 void CBasePlayer::Observer_CheckProperties( void )
 {
 	if( pev->iuser4 = OBS_IN_EYE && m_hObserverTarget )
@@ -1487,6 +1541,7 @@ void CBasePlayer::Observer_CheckProperties( void )
 	}
 }
 
+// CSSDK
 void CBasePlayer::Observer_CheckTarget( void )
 {
 	if( pev->iuser1 != OBS_ROAMING || m_fObserverHasTarget )
@@ -1537,6 +1592,7 @@ void CBasePlayer::Observer_CheckTarget( void )
 	}
 }
 
+// CSSDK
 void CBasePlayer::Observer_FindNextPlayer( bool bReverse, const char* szName )
 {
 	if( !m_flFindNextPlayerTime || m_flFindNextPlayerTime <= gpGlobals->time )
@@ -1614,6 +1670,7 @@ void CBasePlayer::Observer_FindNextPlayer( bool bReverse, const char* szName )
 	}
 }
 
+// CSSDK
 void CBasePlayer::Observer_HandleButtons( void )
 {
 	if( m_flNextObserverInput > gpGlobals->time )
@@ -1652,6 +1709,7 @@ void CBasePlayer::Observer_HandleButtons( void )
 	}
 }
 
+// CSSDK
 CBaseEntity* CBasePlayer::Observer_IsValidTarget( int index, bool checkTeam )
 {
 	if( index > 0 && index <= gpGlobals->maxClients )
@@ -1666,7 +1724,7 @@ CBaseEntity* CBasePlayer::Observer_IsValidTarget( int index, bool checkTeam )
 		return NULL;
 	}
 
-	if( /*((CBasePlayer* )pEnt)->IsObserver() ||*/ FBitSet( pEnt->pev->effects, EF_NODRAW ) )
+	if( ((CBasePlayer* )pEnt)->IsObserver() || FBitSet( pEnt->pev->effects, EF_NODRAW ) )
 	{
 		return NULL;
 	}
@@ -1679,6 +1737,7 @@ CBaseEntity* CBasePlayer::Observer_IsValidTarget( int index, bool checkTeam )
 	return pEnt;
 }
 
+// CSSDK
 void CBasePlayer::Observer_SetMode( int mode )
 {
 	if( mode == pev->iuser1 )
@@ -1692,7 +1751,7 @@ void CBasePlayer::Observer_SetMode( int mode )
 	{
 		if( !CVAR_GET_FLOAT( "mp_forcechasecam" ) )
 		{
-			newMode = CVAR_GET_FLOAT( "mp_forcechasecam" );
+			newMode = (int)CVAR_GET_FLOAT( "mp_forcechasecam" );
 		}
 	}
 	else
@@ -1711,9 +1770,9 @@ void CBasePlayer::Observer_SetMode( int mode )
 	{
 		switch( newMode )
 		{
-		case OBS_CHASE_LOCKED	:
-		case OBS_ROAMING		: newMode = OBS_MAP_FREE; break;
-		case OBS_CHASE_FREE		: newMode = OBS_IN_EYE; break;
+			case OBS_CHASE_LOCKED	:
+			case OBS_ROAMING		: newMode = OBS_MAP_FREE; break;
+			case OBS_CHASE_FREE		: newMode = OBS_IN_EYE; break;
 		}
 	}
 
@@ -1763,6 +1822,7 @@ void CBasePlayer::Observer_SetMode( int mode )
 	m_fObserverHasTarget = FALSE;
 }
 
+// CSSDK
 void CBasePlayer::Radio( const char* szAudioCode, const char* szDisplayCode, short pitch, bool displayIcon )
 {
 	if( IsPlayer() && ( pev->deadflag == DEAD_NO || IsBot() ) )
@@ -1849,6 +1909,7 @@ void CBasePlayer::Radio( const char* szAudioCode, const char* szDisplayCode, sho
 	}
 }
 
+// CSSDK
 void CBasePlayer::SetBombIcon( int status )
 {
 	MESSAGE_BEGIN( MSG_ONE, gmsgStatusIcon, 0, ENT( pev ) );
@@ -1870,6 +1931,7 @@ void CBasePlayer::SetBombIcon( int status )
 	SetScoreboardAttributes( NULL );
 }
 
+// CSSDK
 void CBasePlayer::SetProgressBarTime( int time )
 {
 	if( time )
@@ -1907,6 +1969,7 @@ void CBasePlayer::SetProgressBarTime( int time )
 	}
 }
 
+// CSSDK
 void CBasePlayer::SetScoreboardAttributes( CBasePlayer* pPlayer )
 {
 	if( pPlayer )
@@ -1957,6 +2020,7 @@ void CBasePlayer::SetScoreboardAttributes( CBasePlayer* pPlayer )
 	}
 }
 
+// CSSDK
 void CBasePlayer::TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir, TraceResult *ptr, int bitsDamageType )
 {
 	BOOL shouldBleed = TRUE;
@@ -2114,6 +2178,7 @@ void CBasePlayer::TraceAttack( entvars_t *pevAttacker, float flDamage, Vector ve
 	AddMultiDamage( pevAttacker, this, flDamage, bitsDamageType );
 }
 
+// CSSDK
 void CBasePlayer::UpdateShieldCrosshair( bool shouldRemove )
 {
 	if( shouldRemove )

@@ -207,6 +207,10 @@ public:
 
 	float			m_flC4DetonateDelay;		// 140/132 -
 
+	float			m_flRequiredEscapeRatio;	// 172/164 -
+	int				m_iNumEscapers;				// 176/168 -
+	int				m_iHaveEscaped;				// 180/172 -
+
 	bool			m_bCTCantBuy;				// 184/176 -
 	bool			m_bTCantBuy;				// 185/177 -
 
