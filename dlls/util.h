@@ -305,6 +305,9 @@ extern void ClientPrint( entvars_t *client, int msg_dest, const char *msg_name, 
 extern void			UTIL_SayText( const char *pText, CBaseEntity *pEntity );
 extern void			UTIL_SayTextAll( const char *pText, CBaseEntity *pEntity );
 
+// CSSDK
+extern void FindHullIntersection( const Vector &vecSrc, TraceResult &tr, float *mins, float *maxs, edict_t *pEntity );
+
 
 typedef struct hudtextparms_s
 {

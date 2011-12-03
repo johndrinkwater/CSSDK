@@ -95,11 +95,45 @@ enum CsInternalModel
 #define MAPZONE_ESCAPE     ( 1 << 3 )
 #define MAPZONE_VIP        ( 1 << 4 )
 
+//
+// m_iJoiningState
+//
+#define STATE_JOINED				0
+#define STATE_SHOWLTEXT				1
+#define STATE_DEATH_WAIT_FOR_KEY	2
+#define STATE_PICKINGTEAM			3
+#define STATE_PICKINGCLASS			4
+#define STATE_OBSERVER_MODE			5
+
 // 
 // Item type
 //
 #define ITEMSLOT_PRIMARY	1
 #define ITEMSLOT_SECONDARY	2
+
+//
+// m_fHintMessageHistory
+//
+#define Hint_press_buy_to_purchase				( 1<<1 )
+#define Hint_prevent_hostage_rescue				( 1<<2 )
+#define Hint_rescue_the_hostages				( 1<<2 )
+#define Hint_press_use_so_hostage_will_follow	( 1<<3 )
+#define Hint_lead_hostage_to_rescue_point		( 1<<4 )
+#define Hint_careful_around_hostages			( 1<<5 )
+#define Hint_lost_money							( 1<<6 )
+#define Hint_spotted_a_friend					( 1<<7 )
+#define Hint_spotted_an_enemy					( 1<<8 )
+#define Hint_try_not_to_injure_teammates		( 1<<9 )
+#define Hint_careful_around_teammates			( 1<<10 )
+#define Hint_win_round_by_killing_enemy			( 1<<11 )
+#define Hint_you_have_the_bomb					( 1<<12 )
+#define Hint_out_of_ammo						( 1<<15 )
+#define Hint_you_are_in_targetzone				( 1<<16 )
+#define Hint_hostage_rescue_zone				( 1<<17 )
+#define Hint_ct_vip_zone						( 1<<19 )
+#define Hint_terrorist_vip_zone					( 1<<19 )
+#define Hint_Only_CT_Can_Move_Hostages			( 1<<21 )
+#define Hint_Spec_Duck							( 1<<22 )
 
 //
 // generic player
@@ -159,6 +193,21 @@ enum sbar_data
 	SBAR_END,
 };
 
+typedef struct
+{
+	int lastPrimaryItemId;
+	int lastPrimaryItemAmmo;
+	int lastSecondaryItemId;
+	int lastSecondaryItemAmmo;
+	int heGrenadeAmmo;
+	int flashbangAmmo;
+	int smokeGrenadeAmmo;
+	int defuseKit;
+	int nvgGoggles;
+	int kevlar;
+} RebuyStruct_t;
+
+
 #define CHAT_INTERVAL 1.0f
 
 class CBasePlayer : public CBaseMonster
@@ -187,16 +236,28 @@ public:
 	float				m_flEjectBrass;								// 111/116 -
 
 	int					m_iKevlar;									// 112/117 -
-	BOOL				m_fNotKilled;								// 113/118 - 
+	BOOL				m_fNotKilled;								// 113/118 - (1<<0)
 	int					m_iTeam;									// 114/119 -
 	int					m_iAccount;									// 115/120 - 
 
 	BOOL				m_fHasPrimaryWeapon;						// 116/121 - 
 
-	int					m_iInternalModel;							// 126/131 - 
+	// Player state
+	int					m_fJustConnected;							// 120/135 - (1<<0)
+	int					m_iJoiningState;							// 121/126 - 
 
-	BOOL				m_fDefusekitItem;							// 129/134 - 1<<0
-	BOOL				m_fNvgGoggleItem;							// 129/134 - 1<<8	
+	// Camera
+	CBaseEntity*		m_pLastTriggerCamera;						// 122/127 - 
+	float				m_flNextTriggerCameraTime;					// 123/128 - 
+
+	float				m_flLastActivity;							// 124/129 -
+	BOOL				m_fMissionBriefing;							// 125/130 - (1<<0)
+	int					m_iInternalModel;							// 126/131 - 
+	int					m_iTeammateKills;							// 127/132 -
+	int					m_iIgnoreMessage;							// 128/133 -
+
+	BOOL				m_fDefusekitItem;							// 129/134 - (1<<0)
+	BOOL				m_fNvgGoggleItem;							// 129/134 - (1<<8)	
 
 	// Radio
 	float				m_flNextIdleCheckTime;						// 190/195 -
@@ -208,6 +269,9 @@ public:
 	BOOL				m_fCanPlantBomb;							// 193/198 - (1<<8)
 	BOOL				m_fHasDefuseKit;							// 193/198 - (1<<16)
 
+	// Hud text
+	float				m_flNextHudTextArgsTime;					// 198/203 - 
+	int					m_fHintMessageHistory;						// 204/209 - 
 	int					m_iMenu;									// 205/210 - See MENUID_* constants.
 
 	BOOL				m_fIsVIP;									// 209/214 - (1<<8)
@@ -415,6 +479,7 @@ public:
 	BOOL HasShield( void );
 	BOOL IsProtectedByShield( void );
 	BOOL IsHittingShield( Vector const &vecDir, TraceResult* ptr );
+	void JoiningThink( void );
 	void MakeVIP( void );
 	BOOL NeedsArmor( void );
 	BOOL NeedsDefuseKit( void );
@@ -506,6 +571,9 @@ public:
 	float	m_flFindNextPlayerTime;		// 512/517 -
 
 	char	m_szAutoBuyData[ 256 ];		// 520/525 -
+
+	RebuyStruct_t	m_rgiRebuyStructState;  // 585->594/590->599
+	BOOL			m_fRebuyStructBuilt;	// 595/600 - (1<<0) */
 
 	float	m_flProgressBarStartTime;	// 605/610 -
 	float	m_flProgressBarEndTime;		// 606/611 -

@@ -13,7 +13,10 @@
       <UniqueIdentifier>{fb6eeecc-5d86-4e35-bd9b-b15e7f76b3dc}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
-    <Filter Include="Source Files\Weapons">
+    <Filter Include="Source Files\HL1 Weapons">
+      <UniqueIdentifier>{c0b42cb0-a651-4f67-b4e5-d6804825630f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CS Weapons">
       <UniqueIdentifier>{d8981d52-0578-4a1b-bde5-5ce0a9507843}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -45,19 +48,10 @@
     <ClCompile Include="combat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="crossbow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="crowbar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="doors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="effects.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="egon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="explode.cpp">
@@ -96,19 +90,10 @@
     <ClCompile Include="h_export.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="handgrenade.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="healthkit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="wpn_shared\hl_wpn_glock.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="hornet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="hornetgun.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\interface.cpp">
@@ -124,9 +109,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mortar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mp5.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mpstubb.cpp">
@@ -156,18 +138,6 @@
     <ClCompile Include="..\pm_shared\pm_shared.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="python.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="rpg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="satchel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="shotgun.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="singleplay_gamerules.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -183,9 +153,6 @@
     <ClCompile Include="spectator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="squeakgrenade.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="subs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -193,9 +160,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="triggers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tripmine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="util.cpp">
@@ -214,91 +178,130 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="wpn_xm1014.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_ak47.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_aug.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_awp.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_c4.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_deagle.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_elite.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_famas.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_fiveseven.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_flashbang.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_g3sg1.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_galil.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_glock18.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_hegrenade.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_knife.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_m249.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_m3.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_m4a1.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_mac10.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_mp5navy.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_p228.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_p90.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_scout.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_sg550.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_sg552.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_smokegrenade.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_tmp.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_ump45.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
     </ClCompile>
     <ClCompile Include="wpn_usp.cpp">
-      <Filter>Source Files\Weapons</Filter>
+      <Filter>Source Files\CS Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="crossbow.cpp">
+      <Filter>Source Files\HL1 Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="crowbar.cpp">
+      <Filter>Source Files\HL1 Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="handgrenade.cpp">
+      <Filter>Source Files\HL1 Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="hornetgun.cpp">
+      <Filter>Source Files\HL1 Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="shotgun.cpp">
+      <Filter>Source Files\HL1 Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="satchel.cpp">
+      <Filter>Source Files\HL1 Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg.cpp">
+      <Filter>Source Files\HL1 Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="python.cpp">
+      <Filter>Source Files\HL1 Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="squeakgrenade.cpp">
+      <Filter>Source Files\HL1 Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="tripmine.cpp">
+      <Filter>Source Files\HL1 Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="egon.cpp">
+      <Filter>Source Files\HL1 Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="wpn_shared\hl_wpn_glock.cpp">
+      <Filter>Source Files\HL1 Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="mp5.cpp">
+      <Filter>Source Files\HL1 Weapons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

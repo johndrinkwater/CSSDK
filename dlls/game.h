@@ -38,6 +38,7 @@ extern cvar_t	defaultteam;
 extern cvar_t	allowmonsters;
 
 // CSSDK
+extern cvar_t	startmoney;
 extern cvar_t	fadetoblack;
 
 // Engine Cvars

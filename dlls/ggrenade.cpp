@@ -573,7 +573,7 @@ void CGrenade::Explode3( TraceResult* pTrace, int bitsDamageType )
 //  SMOKE GRENADE
 // ===============
 
-CGrenade* CGrenade::ShootSmokeGrenade( entvars_t *pevOwner, Vector vecStart, Vector vecVelocity, float time, int team, unsigned short usEvent )
+CGrenade* CGrenade::ShootSmokeGrenade( entvars_t *pevOwner, Vector vecStart, Vector vecVelocity, float time, unsigned short usEvent )
 {
 	CGrenade *pGrenade = GetClassPtr( (CGrenade *)NULL );
 

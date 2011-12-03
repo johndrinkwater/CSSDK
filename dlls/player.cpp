@@ -1103,6 +1103,193 @@ BOOL CBasePlayer::IsHittingShield( Vector const &vecDir, TraceResult* ptr )
 	return false;
 }
 
+void CBasePlayer::JoiningThink( void )
+{
+	switch( m_iJoiningState )
+	{
+		case STATE_SHOWLTEXT :
+		{
+			MESSAGE_BEGIN( MSG_ONE, gmsgShowMenu, NULL, ENT( pev ) );
+				WRITE_SHORT( 0 );
+				WRITE_CHAR( 0 );
+				WRITE_BYTE( 0 );
+				WRITE_STRING( 0 );
+			MESSAGE_END();
+
+			m_iJoiningState = STATE_PICKINGTEAM;
+
+			MESSAGE_BEGIN( MSG_ONE, gmsgStatusIcon, NULL, ENT( pev ) );
+				WRITE_BYTE( 0 );
+				WRITE_STRING( "defuser" );
+			MESSAGE_END();
+
+			m_fHasDefuseKit	   = FALSE;
+			m_flLastActivity   = gpGlobals->time;
+			m_fMissionBriefing = FALSE;
+			
+			MESSAGE_BEGIN( MSG_ONE, gmsgItemStatus, NULL, ENT( pev ) );
+				WRITE_BYTE( m_fDefusekitItem );
+			MESSAGE_END();
+
+			break;
+		}
+		case STATE_DEATH_WAIT_FOR_KEY :
+		{
+			if( FBitSet( m_afButtonPressed, IN_ATTACK2 | IN_ATTACK | IN_JUMP ) )
+			{
+				ClearBits( m_afButtonPressed, IN_ATTACK2 | IN_ATTACK | IN_JUMP );
+
+				MESSAGE_BEGIN( MSG_ONE, gmsgShowMenu, NULL, ENT( pev ) );
+					WRITE_SHORT( 0 );
+					WRITE_CHAR( 0 );
+					WRITE_BYTE( 0 );
+					WRITE_STRING( "" );
+				MESSAGE_END();
+
+				m_iJoiningState = STATE_PICKINGTEAM;
+			}
+
+			break;
+		}
+		case STATE_OBSERVER_MODE :
+		{
+			m_fNotKilled = FALSE;
+
+			m_iTeammateKills = 0;
+			m_iIgnoreMessage = 0;
+
+			m_iFOV = 0;
+
+			memset( &m_rgiRebuyStructState, 0, sizeof RebuyStruct_t );
+			m_fRebuyStructBuilt = FALSE;
+
+			m_fJustConnected = FALSE;
+			m_flLastActivity = gpGlobals->time;
+			m_iJoiningState  = STATE_JOINED;
+
+			ResetMaxSpeed();
+
+			if( g_pGameRules->m_bMapHasEscapeZone && m_iTeam == TEAM_CT )
+			{
+				m_iAccount = 0;
+
+				//CheckStartMoney();
+				AddAccount( (int)startmoney.value, true ); // Inline
+			}
+
+			if( g_pGameRules->FPlayerCanRespawn( this ) )
+			{
+				Spawn();
+				g_pGameRules->CheckWinConditions();
+
+				if( !g_pGameRules->m_flTeamCount )
+				{
+					if( g_pGameRules->m_bMapHasBombTarget /*&& !g_pGameRules->IsThereABomber() && !g_pGameRules->IsThereABomb()*/ )
+					{
+						//g_pGameRules->GiveC4();
+					}
+				}
+
+				if( m_iTeam == TEAM_TERRORIST )
+				{
+					//g_pGameRules->m_iNumEscapers++;
+				}
+			}
+			else
+			{
+				pev->deadflag = DEAD_RESPAWNABLE;
+
+				if( this->pev->classname )
+				{
+					/*! @todo Implements this :
+					this->RemoveEntityHashValue( STRING( pev->classname ) );*/
+				}
+
+				pev->classname  = MAKE_STRING( "player" );
+
+				/*! @todo Implements this :
+				this->AddEntityHashValue( STRING( pev->classname ) ); */
+
+				pev->flags &= ( FL_PROXY | FL_FAKECLIENT );
+				pev->flags |= FL_CLIENT  | FL_SPECTATOR;
+
+				edict_t *pentSpawnSpot = g_pGameRules->GetPlayerSpawnSpot( this );
+				StartObserver( pentSpawnSpot->v.origin, pentSpawnSpot->v.angles );
+
+				g_pGameRules->CheckWinConditions();
+
+				char *team;
+
+				switch( m_iTeam )
+				{
+					case TEAM_TERRORIST : team = "TERRORIST" ; break;
+					case TEAM_CT        : team = "CT"        ; break;
+					case TEAM_SPECTATOR : team = "SPECTATOR" ; break;
+					default             : team = "UNASSIGNED"; break;
+				}
+
+				MESSAGE_BEGIN( MSG_ALL, gmsgTeamInfo );
+					WRITE_BYTE( ENTINDEX( this->edict() ) );
+					WRITE_STRING( team );
+				MESSAGE_END();
+
+				MESSAGE_BEGIN( MSG_ALL, gmsgLocation );
+					WRITE_BYTE( ENTINDEX( this->edict() ) );
+					WRITE_STRING( "" );
+				MESSAGE_END();
+
+				MESSAGE_BEGIN( MSG_ALL, gmsgScoreInfo );
+					WRITE_BYTE( ENTINDEX( this->edict() ) );
+					WRITE_SHORT( pev->frags );
+					WRITE_SHORT( m_iDeaths );
+					WRITE_SHORT( 0 );
+					WRITE_SHORT( m_iTeam );
+				MESSAGE_END();
+
+				if( !FBitSet( m_fHintMessageHistory, Hint_Spec_Duck ) )
+				{
+					//HintMessage( "#Spec_Duck", TRUE, TRUE );
+					SetBits( m_fHintMessageHistory, Hint_Spec_Duck );
+				}
+			}
+
+			break;
+		}
+	}
+
+	if( m_pLastTriggerCamera && m_flNextTriggerCameraTime < gpGlobals->time )
+	{
+		m_pLastTriggerCamera = UTIL_FindEntityByClassname( m_pLastTriggerCamera, "trigger_camera" );
+
+		if( !m_pLastTriggerCamera )
+		{
+			m_pLastTriggerCamera = UTIL_FindEntityByClassname( NULL, "trigger_camera" );
+		}
+
+		CBaseEntity *pEnt = UTIL_FindEntityByTargetname( NULL, STRING( m_pLastTriggerCamera->pev->globalname ) );
+
+		if( !FNullEnt( pEnt->edict() ) )
+		{
+			pev->angles = UTIL_VecToAngles( pEnt->pev->origin - m_pLastTriggerCamera->pev->origin ).Normalize(); /*! @todo Check this */
+			pev->angles = -pev->angles;                                                                          
+
+			UTIL_SetOrigin( this->pev, m_pLastTriggerCamera->pev->origin );
+
+			pev->v_angle    = pev->angles;
+			pev->velocity   = g_vecZero;
+			pev->punchangle = g_vecZero;
+			pev->view_ofs   = g_vecZero;
+			pev->fixangle   = 1;
+
+			m_flNextTriggerCameraTime = gpGlobals->time + 6.0;
+		}
+		else
+		{
+			m_pLastTriggerCamera = NULL;
+		}
+	}
+}
+
 void CBasePlayer::MakeVIP( void )
 {
 	pev->body = 0;
