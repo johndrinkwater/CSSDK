@@ -326,7 +326,7 @@ void LinkUserMessages( void )
 
 LINK_ENTITY_TO_CLASS( player, CBasePlayer );
 
-
+// CSSDK
 char* GetCSModelName( int id )
 {
 	char* model = NULL;
@@ -1040,7 +1040,7 @@ void CBasePlayer::DropShield( bool bDeployActiveItem )
 
 		UTIL_MakeVectors( pev->angles );
 
-		CBaseEntity *pShield = CBaseEntity::Create( "weapon_shield", pev->origin + gpGlobals->v_forward * 10, pev->angles, edict() );
+		CWShield *pShield = (CWShield *)CBaseEntity::Create( "weapon_shield", pev->origin + gpGlobals->v_forward * 10, pev->angles, edict() );
 
 		pShield->pev->angles.x = 0;
 		pShield->pev->angles.z = 0;
@@ -1049,8 +1049,7 @@ void CBasePlayer::DropShield( bool bDeployActiveItem )
 		SetThink( &CBaseEntity::SUB_Remove );
 		pShield->pev->nextthink = gpGlobals->time + 300.0;
 
-		// pShield->m_hLastOwner = this;
-		// pShield->m_flNextPickupTime = gpGlobals->time + 2.0;
+		pShield->SetCantBePickedUpByUser( this, 2.0 );
 	}
 }
 

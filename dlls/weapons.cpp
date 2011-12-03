@@ -1634,6 +1634,64 @@ BOOL CWeaponBox::IsEmpty( void )
 	return TRUE;
 }
 
+
+// CSSDK
+LINK_ENTITY_TO_CLASS( weapon_shield, CWShield );
+
+void CWShield::Spawn( void )
+{
+	pev->movetype	= MOVETYPE_TOSS;
+	pev->solid		= SOLID_TRIGGER;
+
+	UTIL_SetSize( pev, g_vecZero, g_vecZero );
+
+	SET_MODEL( ENT( pev ), "models/w_shield.mdl" );
+}
+
+void CWShield::Touch( CBaseEntity *pOther )
+{
+	if( pOther->IsPlayer() && pOther->pev->deadflag == DEAD_NO )
+	{
+		if( m_hLastOwner && m_hLastOwner == pOther )
+		{
+			if( m_flNextPickupTime > gpGlobals->time )
+			{
+				return;
+			}
+
+			m_flNextPickupTime = 0;
+		}
+
+		CBasePlayer *pPlayer = (CBasePlayer *)pOther;
+
+		if( !pPlayer->m_fHasPrimaryWeapon )
+		{
+			if( !pPlayer->m_pLastSecondaryItem || pPlayer->m_pLastSecondaryItem->m_iId != WEAPON_ELITE )
+			{
+				if( !pPlayer->m_pActiveItem || pPlayer->m_pActiveItem->CanHolster() )
+				{
+					if( !pPlayer->m_fIsVIP )
+					{
+						//pPlayer->GiveShield( TRUE );
+
+						EMIT_SOUND( ENT( pev ), CHAN_ITEM, "items/gunpickup2.wav", VOL_NORM, ATTN_NORM );
+						UTIL_Remove( this );
+
+						pev->nextthink = gpGlobals->time + 0.1;
+					}
+				}
+			}
+		}
+	}
+}
+
+void CWShield::SetCantBePickedUpByUser( CBaseEntity* pEntity, float time )
+{
+	m_hLastOwner = pEntity;
+	m_flNextPickupTime = gpGlobals->time + time;	
+}
+
+
 //=========================================================
 //=========================================================
 void CWeaponBox::SetObjectCollisionBox( void )

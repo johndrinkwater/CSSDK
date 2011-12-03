@@ -650,6 +650,20 @@ public:
 	int m_cAmmoTypes;// how many ammo types packed into this box (if packed by a level designer)
 };
 
+
+class CWShield : public CBaseEntity
+{
+public:
+	void Spawn( void );
+	void Touch( CBaseEntity *pOther );
+	void SetCantBePickedUpByUser( CBaseEntity* pEntity, float time );
+
+private:
+	EHANDLE m_hLastOwner;
+	float	m_flNextPickupTime;
+};
+
+
 #ifdef CLIENT_DLL
 BOOL bIsMultiplayer ( void );
 void LoadVModel ( char *szViewModel, CBasePlayer *m_pPlayer );
